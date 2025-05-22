@@ -15,14 +15,14 @@ import { useIsMobile } from "./hooks/useIsMobile";
 import clsx from "clsx";
 
 // Common SearchInput component to avoid duplication
-const SearchInput = ({ 
-  value, 
-  onChange, 
-  onKeyDown, 
-  className 
-}: { 
-  value: string; 
-  onChange: (value: string) => void; 
+const SearchInput = ({
+  value,
+  onChange,
+  onKeyDown,
+  className,
+}: {
+  value: string;
+  onChange: (value: string) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   className?: string;
 }) => (
@@ -38,15 +38,15 @@ const SearchInput = ({
 );
 
 // C1Response component for showing AI responses
-const C1Response = ({ 
-  isLoading, 
-  c1Response, 
+const C1Response = ({
+  isLoading,
+  c1Response,
   query,
-  setC1Response, 
+  setC1Response,
   makeApiCall,
-  className 
-}: { 
-  isLoading: boolean; 
+  className,
+}: {
+  isLoading: boolean;
   c1Response: string;
   query: string;
   setC1Response: (message: string) => void;
@@ -55,7 +55,11 @@ const C1Response = ({
 }) => {
   if (isLoading && c1Response.length === 0) {
     return (
-      <div className={`${styles.c1Container} mb-4 mt-0 rounded-3xl border border-default p-2 ${className || ''}`}>
+      <div
+        className={`${
+          styles.c1Container
+        } mb-4 mt-0 rounded-3xl border border-default p-2 ${className || ""}`}
+      >
         <div className="flex flex-col items-center justify-center h-full">
           <TextLoader
             className="crayon-shell-thread-message-loading"
@@ -66,9 +70,9 @@ const C1Response = ({
       </div>
     );
   }
-  
+
   return (
-    <div className={`${styles.c1Container} mb-4 mt-0 ${className || ''}`}>
+    <div className={`${styles.c1Container} mb-4 mt-0 ${className || ""}`}>
       <C1Component
         key={query}
         c1Response={c1Response}
@@ -85,11 +89,11 @@ const C1Response = ({
 };
 
 // Landing view when user hasn't searched yet
-const LandingView = ({ 
-  isMobile, 
-  searchText, 
-  setSearchText, 
-  handleKeyDown 
+const LandingView = ({
+  isMobile,
+  searchText,
+  setSearchText,
+  handleKeyDown,
 }: {
   isMobile: boolean;
   searchText: string;
@@ -148,7 +152,7 @@ const MobileResultsView = ({
   setSearchText,
   handleKeyDown,
   state,
-  actions
+  actions,
 }: {
   activeTab: string;
   handleTabChange: (value: string) => void;
@@ -179,7 +183,9 @@ const MobileResultsView = ({
             <TabsTrigger value="search" text="Search" />
           </TabsList>
           <TabsContent value="search" className="w-full h-full relative">
-            <div className={`${styles.searchResultsContainer} flex flex-col w-full mt-0 mb-4 rounded-lg shadow-md overflow-hidden absolute inset-0 w-full h-full`}>
+            <div
+              className={`${styles.searchResultsContainer} flex flex-col w-full mt-0 mb-4 rounded-lg shadow-md overflow-hidden absolute inset-0 w-full h-full`}
+            >
               <LegacySearch query={state.query} />
             </div>
           </TabsContent>
@@ -207,7 +213,7 @@ const DesktopResultsView = ({
   setSearchText,
   handleKeyDown,
   state,
-  actions
+  actions,
 }: {
   searchText: string;
   setSearchText: (text: string) => void;
@@ -225,18 +231,18 @@ const DesktopResultsView = ({
       />
     </div>
     <div className={styles.mainContainer}>
-      <div className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-lg shadow-md overflow-hidden`}>
+      <div
+        className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-3xl shadow-md overflow-hidden`}
+      >
         <LegacySearch query={state.query} />
       </div>
-      <div>
-        <C1Response
-          isLoading={state.isLoading}
-          c1Response={state.c1Response}
-          query={state.query}
-          setC1Response={actions.setC1Response}
-          makeApiCall={actions.makeApiCall}
-        />
-      </div>
+      <C1Response
+        isLoading={state.isLoading}
+        c1Response={state.c1Response}
+        query={state.query}
+        setC1Response={actions.setC1Response}
+        makeApiCall={actions.makeApiCall}
+      />
     </div>
   </div>
 );
@@ -282,36 +288,34 @@ export const HomePage = () => {
       className="flex flex-col justify-center h-screen w-screen relative"
       key={`home-${hasSearched}`}
     >
-      <ThemeProvider mode="light" theme={{ ...themePresets.jade.theme }}>
+      <ThemeProvider mode="light" theme={{ ...themePresets.default.theme } }>
         <NavBar />
-        
+
         {!hasSearched ? (
-          <LandingView 
+          <LandingView
             isMobile={isMobile}
             searchText={searchText}
             setSearchText={setSearchText}
             handleKeyDown={handleKeyDown}
           />
+        ) : isMobile ? (
+          <MobileResultsView
+            activeTab={activeTab}
+            handleTabChange={handleTabChange}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            handleKeyDown={handleKeyDown}
+            state={state}
+            actions={actions}
+          />
         ) : (
-          isMobile ? (
-            <MobileResultsView
-              activeTab={activeTab}
-              handleTabChange={handleTabChange}
-              searchText={searchText}
-              setSearchText={setSearchText}
-              handleKeyDown={handleKeyDown}
-              state={state}
-              actions={actions}
-            />
-          ) : (
-            <DesktopResultsView
-              searchText={searchText}
-              setSearchText={setSearchText}
-              handleKeyDown={handleKeyDown}
-              state={state}
-              actions={actions}
-            />
-          )
+          <DesktopResultsView
+            searchText={searchText}
+            setSearchText={setSearchText}
+            handleKeyDown={handleKeyDown}
+            state={state}
+            actions={actions}
+          />
         )}
       </ThemeProvider>
     </div>
