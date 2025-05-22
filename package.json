@@ -9,19 +9,38 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@crayonai/react-ui": "^0.7.11",
+    "@crayonai/stream": "^0.6.4",
+    "@google/genai": "^1.0.0",
+    "@mozilla/readability": "^0.6.0",
+    "@tavily/core": "^0.5.1",
+    "@thesysai/genui-sdk": "^0.6.15",
+    "@types/axios": "^0.9.36",
+    "axios": "^1.9.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.12.1",
+    "jsdom": "^26.1.0",
+    "lucide-react": "^0.469.0",
+    "next": "15.3.1",
+    "openai": "^4.97.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.2"
+    "sass": "^1.89.0",
+    "zod": "^3.24.4",
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3"
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5"
   }
 }

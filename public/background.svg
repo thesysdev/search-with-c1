@@ -1,0 +1,34 @@
+<svg width="1280" height="832" viewBox="0 0 1280 832" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M40 -0.472229L40 832" stroke="#E2E2E2"/>
+<path d="M140 -0.472229L140 832" stroke="#E2E2E2"/>
+<path d="M240 -0.472229L240 832" stroke="#E2E2E2"/>
+<path d="M340 -0.472229L340 832" stroke="#E2E2E2"/>
+<path d="M440 -0.472229L440 832" stroke="#E2E2E2"/>
+<path d="M540 -0.472229L540 832" stroke="#E2E2E2"/>
+<path d="M640 -0.472229L640 832" stroke="#E2E2E2"/>
+<path d="M740 -0.472229L740 832" stroke="#E2E2E2"/>
+<path d="M840 -0.472229L840 832" stroke="#E2E2E2"/>
+<path d="M940 -0.472229L940 832" stroke="#E2E2E2"/>
+<path d="M1040 -0.472229L1040 832" stroke="#E2E2E2"/>
+<path d="M1140 -0.472229L1140 832" stroke="#E2E2E2"/>
+<path d="M1240 -0.472229L1240 832" stroke="#E2E2E2"/>
+<path d="M1280 16.0001L0.000536141 15.9999" stroke="#E2E2E2"/>
+<path d="M1280 116L0.000536141 116" stroke="#E2E2E2"/>
+<path d="M1280 216L0.000536141 216" stroke="#E2E2E2"/>
+<path d="M1280 316L0.000536141 316" stroke="#E2E2E2"/>
+<path d="M1280 416L0.000536141 416" stroke="#E2E2E2"/>
+<path d="M1280 516L0.000536141 516" stroke="#E2E2E2"/>
+<path d="M1280 616L0.000536141 616" stroke="#E2E2E2"/>
+<path d="M1280 716L0.000536141 716" stroke="#E2E2E2"/>
+<path d="M1280 816L0.000536141 816" stroke="#E2E2E2"/>
+<g filter="url(#filter0_f_1_146)">
+<rect x="40" y="16.0001" width="1200" height="800" rx="400" fill="white"/>
+</g>
+<defs>
+<filter id="filter0_f_1_146" x="-260" y="-284" width="1800" height="1400" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="150" result="effect1_foregroundBlur_1_146"/>
+</filter>
+</defs>
+</svg>
