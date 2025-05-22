@@ -32,8 +32,10 @@ export default function LegacySearch({ query }: SearchPageProps) {
   }, [query]);
 
   useEffect(() => {
-    handleSearch();
-  }, [handleSearch, query]);
+    if (query !== "" && query !== searchedQuery && !isLoading) {
+      handleSearch();
+    }
+  }, [query]);
 
   return (
     <div className="flex flex-col w-full h-full">
