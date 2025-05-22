@@ -35,7 +35,8 @@ export default function LegacySearch({ query }: SearchPageProps) {
     if (query !== "" && query !== searchedQuery && !isLoading) {
       handleSearch();
     }
-  }, [query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, handleSearch, isLoading]);
 
   return (
     <div className="flex flex-col w-full h-full">

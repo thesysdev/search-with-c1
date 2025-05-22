@@ -14,6 +14,19 @@ import { NavBar } from "./NavBar";
 import { useIsMobile } from "./hooks/useIsMobile";
 import clsx from "clsx";
 
+// Define proper types for state and actions
+interface UIState {
+  isLoading: boolean;
+  query: string;
+  c1Response: string;
+}
+
+interface UIActions {
+  setQuery: (query: string) => void;
+  setC1Response: (message: string) => void;
+  makeApiCall: (message: string, currentResponse?: string) => Promise<void>;
+}
+
 // Common SearchInput component to avoid duplication
 const SearchInput = ({
   value,
@@ -159,8 +172,8 @@ const MobileResultsView = ({
   searchText: string;
   setSearchText: (text: string) => void;
   handleKeyDown: (e: React.KeyboardEvent) => void;
-  state: any;
-  actions: any;
+  state: UIState;
+  actions: UIActions;
 }) => (
   <div className="flex flex-col fixed top-12 left-0 bottom-0 right-0 bg-container">
     <div className="flex flex-col items-center w-full p-4">
@@ -218,8 +231,8 @@ const DesktopResultsView = ({
   searchText: string;
   setSearchText: (text: string) => void;
   handleKeyDown: (e: React.KeyboardEvent) => void;
-  state: any;
-  actions: any;
+  state: UIState;
+  actions: UIActions;
 }) => (
   <div className="flex flex-col fixed top-12 left-0 bottom-0 right-0 bg-container">
     <div className="flex flex-col items-center w-full p-4">
