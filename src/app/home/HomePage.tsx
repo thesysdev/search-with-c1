@@ -8,15 +8,20 @@ import { useState, useEffect } from "react";
 import styles from "./HomePage.module.scss";
 import { TextLoader } from "./Loader";
 import { themePresets } from "@crayonai/react-ui/ThemeProvider";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@crayonai/react-ui";
 import LegacySearch from "./LegacySearch/LegacySearch";
 import { NavBar } from "./NavBar";
+import { useIsMobile } from "./hooks/useIsMobile";
+import clsx from "clsx";
 
 export const HomePage = () => {
+  const isMobile = useIsMobile();
   const { state, actions } = useUIState();
 
   const [searchText, setSearchText] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [activeTab, setActiveTab] = useState("ai");
 
   // This ensures we only run animations on the client side
   useEffect(() => {
@@ -37,6 +42,10 @@ export const HomePage = () => {
     if (e.key === "Enter" && !state.isLoading && searchText.length > 0) {
       handleSearch();
     }
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
   };
 
   if (!isClient) {
@@ -63,13 +72,18 @@ export const HomePage = () => {
         )}
 
         {!hasSearched ? (
-          <div className="flex flex-col items-center justify-center -mt-[60px] relative z-10">
+          <div
+            className={clsx(
+              "flex flex-col items-center justify-center -mt-[60px] relative z-10",
+              isMobile && "mx-5"
+            )}
+          >
             <div className="flex mb-xl">
               <Image
                 src="/page-title.svg"
                 alt="Thesys Logo"
-                width={300}
-                height={100}
+                width={isMobile ? 200 : 300}
+                height={isMobile ? 100 : 100}
                 priority
               />
             </div>
@@ -86,7 +100,7 @@ export const HomePage = () => {
               <Image
                 src="/page-subtitle.svg"
                 alt="Thesys Logo"
-                width={300}
+                width={isMobile ? 250 : 300}
                 height={23}
                 priority
               />
@@ -106,42 +120,111 @@ export const HomePage = () => {
               </div>
             </div>
             <div className={styles.mainContainer}>
-              <div
-                className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-lg shadow-md overflow-hidden`}
-              >
-                <LegacySearch query={state.query} />
-              </div>
-              {state.isLoading && state.c1Response.length === 0 ? (
-                <div
-                  className={`${styles.c1Container} mb-4 mt-0 rounded-3xl border border-default p-2`}
-                >
-                  <div className="flex flex-col items-center justify-center h-full">
-                    <TextLoader
-                      className={"crayon-shell-thread-message-loading"}
-                      show={true}
-                      text={`Composing response...`}
-                    />
-                  </div>
+              {isMobile ? (
+                <div className="flex flex-col w-full h-full px-4">
+                  <Tabs
+                    value={activeTab}
+                    onValueChange={handleTabChange}
+                    className="mb-4 h-full"
+                  >
+                    <TabsList>
+                      <TabsTrigger value="ai" text="AI Mode" />
+                      <TabsTrigger value="search" text="Search" />
+                    </TabsList>
+                    <TabsContent
+                      value="search"
+                      className="w-full h-full relative"
+                    >
+                      <div
+                        className={`${styles.searchResultsContainer} flex flex-col w-full mt-0 mb-4 rounded-lg shadow-md overflow-hidden absolute inset-0 w-full h-full`}
+                      >
+                        <LegacySearch query={state.query} />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="ai" className="w-full h-full relative">
+                      <div className="absolute inset-0 w-full h-full">
+                        {state.isLoading && state.c1Response.length === 0 ? (
+                          <div
+                            className={`${styles.c1Container} mb-4 mt-0 rounded-3xl border border-default p-2 w-full`}
+                          >
+                            <div className="flex flex-col items-center justify-center h-full">
+                              <TextLoader
+                                className={
+                                  "crayon-shell-thread-message-loading"
+                                }
+                                show={true}
+                                text={`Composing response...`}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className={`${styles.c1Container} mb-4 mt-0 w-full`}
+                          >
+                            <C1Component
+                              key={state.query}
+                              c1Response={state.c1Response}
+                              isStreaming={state.isLoading}
+                              updateMessage={(message) =>
+                                actions.setC1Response(message)
+                              }
+                              onAction={({ llmFriendlyMessage }) => {
+                                if (!state.isLoading) {
+                                  actions.makeApiCall(
+                                    llmFriendlyMessage,
+                                    state.c1Response
+                                  );
+                                }
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </div>
               ) : (
-                <div
-                  className={`${styles.c1Container} mb-4 mt-0`}
-                >
-                  <C1Component
-                    key={state.query}
-                    c1Response={state.c1Response}
-                    isStreaming={state.isLoading}
-                    updateMessage={(message) => actions.setC1Response(message)}
-                    onAction={({ llmFriendlyMessage }) => {
-                      if (!state.isLoading) {
-                        actions.makeApiCall(
-                          llmFriendlyMessage,
-                          state.c1Response
-                        );
-                      }
-                    }}
-                  />
-                </div>
+                <>
+                  <div
+                    className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-lg shadow-md overflow-hidden`}
+                  >
+                    <LegacySearch query={state.query} />
+                  </div>
+                  <div>
+                    {state.isLoading && state.c1Response.length === 0 ? (
+                      <div
+                        className={`${styles.c1Container} mb-4 mt-0 rounded-3xl border border-default p-2`}
+                      >
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <TextLoader
+                            className={"crayon-shell-thread-message-loading"}
+                            show={true}
+                            text={`Composing response...`}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={`${styles.c1Container} mb-4 mt-0`}>
+                        <C1Component
+                          key={state.query}
+                          c1Response={state.c1Response}
+                          isStreaming={state.isLoading}
+                          updateMessage={(message) =>
+                            actions.setC1Response(message)
+                          }
+                          onAction={({ llmFriendlyMessage }) => {
+                            if (!state.isLoading) {
+                              actions.makeApiCall(
+                                llmFriendlyMessage,
+                                state.c1Response
+                              );
+                            }
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           </div>
