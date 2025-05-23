@@ -56,7 +56,8 @@ For each response:
 2. Present information in a clear, organized manner using best ui components
 3. Cite sources when providing information with links and source thumnails images with links
 4. Try to include images to make the response more engaging using the image tool
-5. Use graphs for showing any data visualizations
+5. When using the image tool then try to fetch multiple images and use the IMAGE_GALLERY component
+5. Use graphs for showing any data visualizations of any kind (e.g. charts, tables, etc.)
 
 Remember to be helpful, accurate, and comprehensive in your responses while maintaining a conversational tone.`,
       },
