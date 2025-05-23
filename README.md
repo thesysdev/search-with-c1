@@ -63,12 +63,19 @@ Unlike traditional search engines that show a list of links or AI platforms that
    ```
 
 4. Add your API keys to the `.env` file:
+
    ```
-   THESYS_API_KEY=your_thesys_api_key
-   GOOGLE_API_KEY=your_google_api_key
-   GOOGLE_CX=your_google_custom_search_id
-   GEMINI_API_KEY=your_gemini_api_key
+   THESYS_API_KEY=[your_thesys_api_key]
+   GOOGLE_API_KEY=[your_google_api_key]
+   GOOGLE_CX=[your_google_custom_search_id]
+   GEMINI_API_KEY=[your_gemini_api_key]
    ```
+
+   Generate an API Key by logging into https://chat.thesys.dev/console/keys
+
+   Google Keys for image & web search. Read more about generating these keys here: https://developers.google.com/custom-search/v1/introduction
+
+   Gemini for summarization. Generate a key at https://aistudio.google.com/apikey
 
 ### Development
 
