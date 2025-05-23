@@ -4,9 +4,11 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { googleImageSearch } from "./google_image_search";
 
-export const imageTool: RunnableToolFunctionWithParse<{
+export const imageTool = (
+  writeProgress: (progress: { title: string; content: string }) => void
+): RunnableToolFunctionWithParse<{
   altText: string[];
-}> = {
+}> => ({
   type: "function",
   function: {
     name: "imageSearch",
@@ -31,16 +33,15 @@ export const imageTool: RunnableToolFunctionWithParse<{
       try {
         const results = await Promise.all(
           altText.map(async (text) => {
-            // c1Response.writeThinkItem({
-            //   title: 'Using Image Search Tool',
-            //   description: 'Searching for images for:' + JSON.stringify(text),
-            //   ephemeral: false,
-            // })
+            writeProgress({
+              title: "Using Google Image Search Tool",
+              content: "Searching for: " + JSON.stringify(text),
+            });
             const response = await googleImageSearch({
               query: text,
               num: 1,
             });
-            
+
             if (!response.items || response.items.length === 0) {
               return { altText: text, imageUrl: null, thumbnailUrl: null };
             }
@@ -65,4 +66,4 @@ export const imageTool: RunnableToolFunctionWithParse<{
     },
     strict: true,
   },
-};
+});
