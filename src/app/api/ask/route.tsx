@@ -5,7 +5,7 @@ import { transformStream } from "@crayonai/stream";
 import { tools } from "./tools";
 
 const client = new OpenAI({
-  baseURL: "https://api.thesys.dev/v1/embed",
+  baseURL: "https://api.dev.thesys.dev/v1/embed",
   apiKey: process.env.THESYS_API_KEY,
 });
 
@@ -27,6 +27,13 @@ export async function POST(req: NextRequest) {
   messages.push({
     role: "user",
     content: prompt,
+  });
+
+  const responseStream = new TransformStream<string, string>();
+  const responseWriter = responseStream.writable.getWriter();
+
+  const t = tools((progress) => {
+    responseWriter.write(`<progress>${JSON.stringify(progress)}</progress>`);
   });
 
   const runToolsResponse = client.beta.chat.completions.runTools({
@@ -57,16 +64,34 @@ Remember to be helpful, accurate, and comprehensive in your responses while main
     ],
     stream: true,
     tool_choice: "auto",
-    tools: tools,
+    tools: t,
   });
 
   const llmStream = await runToolsResponse;
 
-  const responseStream = transformStream(llmStream, (chunk) => {
-    return chunk.choices[0]?.delta?.content || "";
+  runToolsResponse.on("message", (m) => {
+    console.log(m);
   });
 
-  return new Response(responseStream as ReadableStream, {
+  transformStream(
+    llmStream,
+    (chunk) => {
+      const contentDelta = chunk.choices[0]?.delta?.content || "";
+
+      console.log(contentDelta);
+      if (contentDelta) {
+        responseWriter.write(contentDelta);
+      }
+      return contentDelta;
+    },
+    {
+      onEnd: () => {
+        responseWriter.close();
+      },
+    }
+  );
+
+  return new Response(responseStream.readable, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",

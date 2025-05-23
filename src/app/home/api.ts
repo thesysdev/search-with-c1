@@ -66,6 +66,22 @@ export const makeApiCall = async ({
     // Initialize accumulator for streamed response
     let streamResponse = "";
 
+    const updateStreamedResponse = () => {
+      const contentPosition = streamResponse.lastIndexOf("<content>");
+
+      const content = streamResponse.slice(contentPosition);
+      setC1Response(content);
+
+      if (!content.length) {
+        while (true) {
+          const progresses = streamResponse.match(/<progress>.*?<\/progress>/g);
+          if (progresses) {
+            console.log(progresses);
+          }
+        }
+      }
+    };
+
     // Read the stream chunk by chunk
     while (true) {
       const { done, value } = await stream.read();
@@ -74,7 +90,7 @@ export const makeApiCall = async ({
 
       // Accumulate response and update state
       streamResponse += chunk;
-      setC1Response(streamResponse);
+      updateStreamedResponse();
 
       // Break the loop when stream is complete
       if (done) {

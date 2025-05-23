@@ -9,7 +9,6 @@ import {
 } from "./google_cs";
 import { summarizeWebsiteContent } from "./website_content_summarizer";
 import { extractWebsiteContent } from "./website_content";
-// import { makeC1Response } from "@thesysai/genui-sdk";
 
 type RawGoogleResult = {
   title: string;
@@ -53,7 +52,9 @@ function transformGoogleResponse(
 
 // const c1Response = makeC1Response()
 
-export const googleWebSearchTool: RunnableToolFunctionWithParse<{
+export const googleWebSearchTool = (
+  writeProgress: (progress: { title: string; content: string }) => void
+): RunnableToolFunctionWithParse<{
   query: string;
   num?: number;
   cr?: string;
@@ -61,7 +62,7 @@ export const googleWebSearchTool: RunnableToolFunctionWithParse<{
   siteSearch?: string;
   exactTerms?: string;
   dateRestrict?: string;
-}> = {
+}> => ({
   type: "function",
   function: {
     name: "google_web_search",
@@ -127,11 +128,10 @@ export const googleWebSearchTool: RunnableToolFunctionWithParse<{
         if (exactTerms) params.exactTerms = exactTerms;
         if (dateRestrict) params.dateRestrict = dateRestrict;
 
-        // c1Response.writeThinkItem({
-        //   title: 'Using Google Web Search Tool',
-        //   description: 'Searching for: ' + JSON.stringify(query),
-        //   ephemeral: false,
-        // })
+        writeProgress({
+          title: "Using Google Web Search Tool",
+          content: "Searching for: " + JSON.stringify(query),
+        });
 
         const googleSearchResponse = await googleCustomSearch(params);
 
@@ -161,7 +161,7 @@ export const googleWebSearchTool: RunnableToolFunctionWithParse<{
               // Step 1: Extract content for this specific URL
               const { results } = await extractWebsiteContent([url]);
               const content = results[0]?.content ?? "";
-              
+
               // Step 2: Only summarize if we have content
               let summary = "";
               if (content) {
@@ -178,7 +178,7 @@ export const googleWebSearchTool: RunnableToolFunctionWithParse<{
               } else {
                 summary = "Content extraction failed.";
               }
-              
+
               return {
                 summary,
                 url,
@@ -193,11 +193,10 @@ export const googleWebSearchTool: RunnableToolFunctionWithParse<{
           })
         );
 
-        // c1Response.writeThinkItem({
-        //   title: 'Combining results',
-        //   description: 'Combining results',
-        //   ephemeral: false,
-        // })
+        writeProgress({
+          title: "Combining results",
+          content: "Combining results",
+        });
 
         const webSearchResults = combinedResults.map((result, index) => ({
           ...transformedGoogleResults[index],
@@ -211,4 +210,4 @@ export const googleWebSearchTool: RunnableToolFunctionWithParse<{
     },
     strict: true,
   },
-};
+});
