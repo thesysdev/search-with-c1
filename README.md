@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Setting up the keys
+Set the API keys required for Google Search, Gemini & Thesys by copying .env.example into .env
+and filling in the values.
+
 ## Getting Started
 
 First, run the development server:
