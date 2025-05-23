@@ -36,52 +36,40 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 
   return (
     <div className={styles.resultsContainer}>
-        {results.map((result, index) => (
-          <div 
-            key={result.cacheId || index} 
-            className={styles.resultItem}
-          >
-            <div className={styles.resultHeader}>
-              <div className={styles.resultMeta}>
-                <div className={styles.breadcrumb}>
-                  <a
-                    href={result.link}
-                    className={styles.resultUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {result.displayLink}
-                  </a>
-                </div>
-
-                <div className={styles.titleWrapper}>
-                  <a
-                    href={result.link}
-                    className={styles.resultTitle}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {result.title}
-                  </a>
-                </div>
-
-                <div
-                  className={styles.resultDisplayUrl}
+      {results.map((result, index) => (
+        <div key={result.cacheId || index} className={styles.resultItem}>
+          <div className={styles.resultHeader}>
+            <div className={styles.resultMeta}>
+              <div className={styles.breadcrumb}>
+                <a
+                  href={result.link}
+                  className={styles.resultUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {result.formattedUrl}
-                </div>
+                  {result.displayLink}
+                </a>
               </div>
-            </div>
 
-            <div className={styles.resultSnippet}>
-              <div
-              >
-                {result.snippet}
+              <div className={styles.titleWrapper}>
+                <a
+                  href={result.link}
+                  className={styles.resultTitle}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {result.title}
+                </a>
               </div>
             </div>
-          <div className="border-t border-default my-2" />
           </div>
-        ))}
+
+          <div className={styles.resultSnippet}>
+            <div>{result.snippet}</div>
+          </div>
+          <div className="border-t border-default my-2" />
+        </div>
+      ))}
     </div>
   );
 };
