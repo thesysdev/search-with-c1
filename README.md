@@ -1,4 +1,8 @@
-![Search with C1](public/page-title.svg)
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="public/page-title.svg" />
+  <source media="(prefers-color-scheme: dark)" srcset="public/page-title-dark.svg" />
+  <img alt="Search with C1" src="public/page-title.svg" />
+</picture>
 
 ## Introduction
 
