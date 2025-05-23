@@ -30,8 +30,6 @@ interface UIActions {
 }
 
 const ProgressSteps = ({ progressUpdates }: { progressUpdates: string[] }) => {
-  const isMobile = useIsMobile();
-
   const parsedUpdates = progressUpdates.map((update) => {
     try {
       const jsonContent = update.replace(
@@ -44,7 +42,7 @@ const ProgressSteps = ({ progressUpdates }: { progressUpdates: string[] }) => {
         content: data.content || "",
       };
     } catch (e) {
-      return { title: "Processing", content: "" };
+      return { title: "Processing", content: "Error: " + e };
     }
   });
 
