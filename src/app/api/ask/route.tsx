@@ -9,6 +9,7 @@ const client = new OpenAI({
   apiKey: process.env.THESYS_API_KEY,
 });
 
+
 export async function POST(req: NextRequest) {
   const { prompt, previousC1Response } = (await req.json()) as {
     prompt: string;
