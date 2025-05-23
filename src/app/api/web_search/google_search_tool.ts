@@ -50,8 +50,6 @@ function transformGoogleResponse(
   });
 }
 
-// const c1Response = makeC1Response()
-
 export const googleWebSearchTool = (
   writeProgress: (progress: { title: string; content: string }) => void
 ): RunnableToolFunctionWithParse<{
@@ -153,11 +151,10 @@ export const googleWebSearchTool = (
         const combinedResults = await Promise.all(
           sourceURLs.map(async (url) => {
             try {
-              // c1Response.writeThinkItem({
-              //   title: 'Extracting content from: ' + url,
-              //   description: 'Extracting content from: ' + url,
-              //   ephemeral: false,
-              // })
+              writeProgress({
+                title: "Extracting content from: " + url,
+                content: "Extracting content from: " + url,
+              });
               // Step 1: Extract content for this specific URL
               const { results } = await extractWebsiteContent([url]);
               const content = results[0]?.content ?? "";
@@ -165,11 +162,10 @@ export const googleWebSearchTool = (
               // Step 2: Only summarize if we have content
               let summary = "";
               if (content) {
-                // c1Response.writeThinkItem({
-                //   title: 'Summarizing content',
-                //   description: 'Summarizing content',
-                //   ephemeral: false,
-                // })
+                writeProgress({
+                  title: "Summarizing content",
+                  content: "Summarizing content",
+                });
                 summary = await summarizeWebsiteContent({
                   content,
                   query,

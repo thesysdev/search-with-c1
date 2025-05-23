@@ -19,13 +19,75 @@ interface UIState {
   isLoading: boolean;
   query: string;
   c1Response: string;
+  progressUpdates: string[];
 }
 
 interface UIActions {
   setQuery: (query: string) => void;
   setC1Response: (message: string) => void;
+  setProgressUpdates: (updates: string[]) => void;
   makeApiCall: (message: string, currentResponse?: string) => Promise<void>;
 }
+
+const ProgressSteps = ({ progressUpdates }: { progressUpdates: string[] }) => {
+  const isMobile = useIsMobile();
+
+  const parsedUpdates = progressUpdates.map((update) => {
+    try {
+      const jsonContent = update.replace(
+        /<progress>([\s\S]*?)<\/progress>/,
+        "$1"
+      );
+      const data = JSON.parse(jsonContent);
+      return {
+        title: data.title || "Processing",
+        content: data.content || "",
+      };
+    } catch (e) {
+      return { title: "Processing", content: "" };
+    }
+  });
+
+  const uniqueSteps = parsedUpdates.reduce((acc, curr) => {
+    if (!acc.some((item) => item.title === curr.title)) {
+      acc.push(curr);
+    }
+    return acc;
+  }, [] as { title: string; content: string }[]);
+
+  return (
+    <div
+      className={clsx(
+        "flex flex-col items-center justify-center h-full w-full"
+      )}
+    >
+      {uniqueSteps.length === 0 && (
+        <TextLoader
+          className="crayon-shell-thread-message-loading mb-4"
+          show={true}
+          text="Composing response..."
+        />
+      )}
+      <div className="flex flex-col gap-2 w-full max-w-md">
+        {uniqueSteps.map((step, index) => (
+          <div
+            key={index}
+            className="flex items-center rounded-md p-1 animate-pulse"
+          >
+            <div className="w-full">
+              <h4 className="text-sm line-clamp-2">{step.title}</h4>
+              {step.content && (
+                <p className="text-xs text-secondary line-clamp-2">
+                  {step.content}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // Common SearchInput component to avoid duplication
 const SearchInput = ({
@@ -55,6 +117,7 @@ const C1Response = ({
   isLoading,
   c1Response,
   query,
+  progressUpdates,
   setC1Response,
   makeApiCall,
   className,
@@ -62,6 +125,7 @@ const C1Response = ({
   isLoading: boolean;
   c1Response: string;
   query: string;
+  progressUpdates: string[];
   setC1Response: (message: string) => void;
   makeApiCall: (message: string, currentResponse?: string) => void;
   className?: string;
@@ -73,13 +137,7 @@ const C1Response = ({
           styles.c1Container
         } mb-4 mt-0 rounded-3xl border border-default p-2 ${className || ""}`}
       >
-        <div className="flex flex-col items-center justify-center h-full">
-          <TextLoader
-            className="crayon-shell-thread-message-loading"
-            show={true}
-            text="Composing response..."
-          />
-        </div>
+        <ProgressSteps progressUpdates={progressUpdates} />
       </div>
     );
   }
@@ -208,6 +266,7 @@ const MobileResultsView = ({
                 isLoading={state.isLoading}
                 c1Response={state.c1Response}
                 query={state.query}
+                progressUpdates={state.progressUpdates}
                 setC1Response={actions.setC1Response}
                 makeApiCall={actions.makeApiCall}
                 className="w-full"
@@ -253,6 +312,7 @@ const DesktopResultsView = ({
         isLoading={state.isLoading}
         c1Response={state.c1Response}
         query={state.query}
+        progressUpdates={state.progressUpdates}
         setC1Response={actions.setC1Response}
         makeApiCall={actions.makeApiCall}
       />
@@ -301,7 +361,7 @@ export const HomePage = () => {
       className="flex flex-col justify-center h-screen w-screen relative"
       key={`home-${hasSearched}`}
     >
-      <ThemeProvider mode="light" theme={{ ...themePresets.default.theme } }>
+      <ThemeProvider mode="light" theme={{ ...themePresets.default.theme }}>
         <NavBar />
 
         {!hasSearched ? (

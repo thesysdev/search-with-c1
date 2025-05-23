@@ -3,9 +3,6 @@ import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { googleImageSearch } from "./google_image_search";
-// import { makeC1Response } from "@thesysai/genui-sdk";
-
-// const c1Response = makeC1Response()
 
 export const imageTool: RunnableToolFunctionWithParse<{
   altText: string[];

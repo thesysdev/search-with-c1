@@ -15,6 +15,8 @@ export type ApiCallParams = {
   abortController: AbortController | null;
   /** Callback to update the abort controller state */
   setAbortController: (controller: AbortController | null) => void;
+  /** Callback to update progress updates state */
+  setProgressUpdates?: (updates: string[]) => void;
 };
 
 /**
@@ -30,6 +32,7 @@ export const makeApiCall = async ({
   setIsLoading,
   abortController,
   setAbortController,
+  setProgressUpdates,
 }: ApiCallParams) => {
   try {
     // Cancel any ongoing request before starting a new one
@@ -67,18 +70,24 @@ export const makeApiCall = async ({
     let streamResponse = "";
 
     const updateStreamedResponse = () => {
-      const contentPosition = streamResponse.lastIndexOf("<content>");
+      const contentPosition = streamResponse.indexOf("<content>");
 
-      const content = streamResponse.slice(contentPosition);
-      setC1Response(content);
-
-      if (!content.length) {
-        while (true) {
-          const progresses = streamResponse.match(/<progress>.*?<\/progress>/g);
-          if (progresses) {
-            console.log(progresses);
-          }
+      if (contentPosition !== -1) {
+        const contentStartPosition = contentPosition + "<content>".length;
+        const contentEndPosition = streamResponse.indexOf("</content>", contentStartPosition);
+        
+        if (contentEndPosition !== -1) {
+          const content = streamResponse.substring(contentStartPosition, contentEndPosition);
+          setC1Response(content);
+        } else {
+          const content = streamResponse.substring(contentStartPosition);
+          setC1Response(content);
         }
+      }
+
+      const progresses = streamResponse.match(/<progress>.*?<\/progress>/g);
+      if (progresses && setProgressUpdates) {
+        setProgressUpdates(progresses);
       }
     };
 
