@@ -127,8 +127,10 @@ export const googleWebSearchTool = (
         if (dateRestrict) params.dateRestrict = dateRestrict;
 
         writeProgress({
-          title: "Using Google Web Search Tool",
-          content: "Searching for: " + JSON.stringify(query),
+          title: "Initiating Query Resolution",
+          content: `Finding the most relevant pages for: ${JSON.stringify(
+            query
+          )}`,
         });
 
         const googleSearchResponse = await googleCustomSearch(params);
@@ -143,17 +145,15 @@ export const googleWebSearchTool = (
         const transformedGoogleResults = transformGoogleResponse(
           googleSearchResponse.items
         );
-        const sourceURLs = transformedGoogleResults.map(
-          (result) => result.sourceURL
-        );
 
         // Process extraction and summarization for each URL in parallel
         const combinedResults = await Promise.all(
-          sourceURLs.map(async (url) => {
+          transformedGoogleResults.map(async (result) => {
+            const url = result.sourceURL;
             try {
               writeProgress({
-                title: "Extracting content from: " + url,
-                content: "Extracting content from: " + url,
+                title: "Structured Content Extraction",
+                content: `Parsing content from ${url}...`,
               });
               // Step 1: Extract content for this specific URL
               const { results } = await extractWebsiteContent([url]);
@@ -163,8 +163,8 @@ export const googleWebSearchTool = (
               let summary = "";
               if (content) {
                 writeProgress({
-                  title: "Summarizing content",
-                  content: "Summarizing content",
+                  title: "Semantic Abstraction via LLM",
+                  content: `Summarizing content from ${url}`,
                 });
                 summary = await summarizeWebsiteContent({
                   content,
@@ -190,8 +190,9 @@ export const googleWebSearchTool = (
         );
 
         writeProgress({
-          title: "Combining results",
-          content: "Combining results",
+          title: "Aggregating Insights",
+          content:
+            "Merging all the summaries into a coherent, accurate answer.",
         });
 
         const webSearchResults = combinedResults.map((result, index) => ({

@@ -3,12 +3,12 @@ import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { transformStream } from "@crayonai/stream";
 import { tools } from "./tools";
+import { makeC1Response } from "@thesysai/genui-sdk/server";
 
 const client = new OpenAI({
   baseURL: "https://api.thesys.dev/v1/embed",
   apiKey: process.env.THESYS_API_KEY,
 });
-
 
 export async function POST(req: NextRequest) {
   const { prompt, previousC1Response } = (await req.json()) as {
@@ -30,11 +30,13 @@ export async function POST(req: NextRequest) {
     content: prompt,
   });
 
-  const responseStream = new TransformStream<string, string>();
-  const responseWriter = responseStream.writable.getWriter();
+  const c1Response = makeC1Response();
 
   const t = tools((progress) => {
-    responseWriter.write(`<progress>${JSON.stringify(progress)}</progress>`);
+    c1Response.writeThinkItem({
+      title: progress.title,
+      description: progress.content,
+    });
   });
 
   const runToolsResponse = client.beta.chat.completions.runTools({
@@ -71,29 +73,24 @@ Remember to be helpful, accurate, and comprehensive in your responses while main
 
   const llmStream = await runToolsResponse;
 
-  runToolsResponse.on("message", (m) => {
-    console.log(m);
-  });
-
   transformStream(
     llmStream,
     (chunk) => {
       const contentDelta = chunk.choices[0]?.delta?.content || "";
 
-      console.log(contentDelta);
       if (contentDelta) {
-        responseWriter.write(contentDelta);
+        c1Response.writeContent(contentDelta);
       }
       return contentDelta;
     },
     {
       onEnd: () => {
-        responseWriter.close();
+        c1Response.end();
       },
     }
   );
 
-  return new Response(responseStream.readable, {
+  return new Response(c1Response.responseStream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",

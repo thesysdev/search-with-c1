@@ -109,3 +109,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
+:global(.c1-think-container) :global(.crayon-step-title) {
+  opacity: 0.6;
+}
