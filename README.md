@@ -12,6 +12,8 @@ Experience the vast possibilities of web search reimagined through [Thesys](http
 
 ![Demo GIF](assets/search_demo.gif)
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-search--with--c1.vercel.app-blue?style=for-the-badge&logo=vercel&logo=link)](https://search-with-c1.vercel.app/)
+
 ## Overview
 
 This project reimagines what web search could be if combined with Thesys GenUI:
