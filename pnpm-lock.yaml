@@ -21,8 +21,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@thesysai/genui-sdk':
-        specifier: ^0.6.17
-        version: 0.6.17(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/react-ui@0.7.13(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(lucide-react@0.469.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.6.18
+        version: 0.6.18(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/react-ui@0.7.13(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(lucide-react@0.469.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/axios':
         specifier: ^0.9.36
         version: 0.9.36
@@ -1116,11 +1116,11 @@ packages:
   '@tailwindcss/postcss@4.1.7':
     resolution: {integrity: sha512-88g3qmNZn7jDgrrcp3ZXEQfp9CVox7xjP1HN2TFKI03CltPVd/c61ydn5qJJL8FYunn0OqBaW5HNUga0kmPVvw==}
 
-  '@thesysai/genui-sdk@0.6.17':
-    resolution: {integrity: sha512-CLDfDhTv09NkoP8yAragHSRhM2qahlpqstYBPjFqZsgvVwFYvTMeKzpc0twQl1Cie8j1FzDomElY6nzvD4pCRg==}
+  '@thesysai/genui-sdk@0.6.18':
+    resolution: {integrity: sha512-UefEBzZd1G1VcJ3/PS4rlQSjiiw/1iik06hcneceULK8appME8pxpvm/1qud18GVhUGd3DyVkfFF7X7C6+mbEg==}
     peerDependencies:
       '@crayonai/react-core': ^0.7.3
-      '@crayonai/react-ui': ^0.7.11
+      '@crayonai/react-ui': ^0.7.13
       lucide-react: ^0.469.0
       react: '>=18.3.1'
       react-dom: '>=18.3.1'
@@ -4762,7 +4762,7 @@ snapshots:
       postcss: 8.5.3
       tailwindcss: 4.1.7
 
-  '@thesysai/genui-sdk@0.6.17(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/react-ui@0.7.13(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(lucide-react@0.469.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@thesysai/genui-sdk@0.6.18(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/react-ui@0.7.13(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(lucide-react@0.469.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@crayonai/react-core': 0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1))
       '@crayonai/react-ui': 0.7.13(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1))

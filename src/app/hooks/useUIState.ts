@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { makeApiCall } from "./api";
+import { makeApiCall } from "../utils/api";
 
 /**
  * Type definition for the UI state.
@@ -12,8 +12,6 @@ export type UIState = {
   c1Response: string;
   /** Whether an API request is currently in progress */
   isLoading: boolean;
-  /** Progress updates received during API calls */
-  progressUpdates: string[];
 };
 
 /**
@@ -31,8 +29,6 @@ export const useUIState = () => {
   const [c1Response, setC1Response] = useState("");
   // State for tracking if a request is in progress
   const [isLoading, setIsLoading] = useState(false);
-  // State for tracking progress updates
-  const [progressUpdates, setProgressUpdates] = useState<string[]>([]);
   // State for managing request cancellation
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
@@ -46,7 +42,6 @@ export const useUIState = () => {
     previousC1Response?: string
   ) => {
     setC1Response("");
-    setProgressUpdates([]);
     await makeApiCall({
       searchQuery,
       previousC1Response,
@@ -54,7 +49,6 @@ export const useUIState = () => {
       setIsLoading,
       abortController,
       setAbortController,
-      setProgressUpdates,
     });
   };
 
@@ -64,12 +58,10 @@ export const useUIState = () => {
       query,
       c1Response,
       isLoading,
-      progressUpdates,
     },
     actions: {
       setQuery,
       setC1Response,
-      setProgressUpdates,
       makeApiCall: handleApiCall,
     },
   };

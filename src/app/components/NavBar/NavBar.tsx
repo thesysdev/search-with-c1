@@ -2,9 +2,12 @@
 
 import { Button } from "@crayonai/react-ui";
 import Image from "next/image";
-import { ArrowRight, Github } from "lucide-react";
+import { ArrowRight, Github, Wrench } from "lucide-react";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 export const NavBar = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="fixed top-0 left-0 w-full z-10 bg-container">
       <div className="flex items-center justify-between px-6 py-3">
@@ -33,7 +36,7 @@ export const NavBar = () => {
             }
           >
             <Github className="h-4 w-4" />
-            Github
+            {!isMobile && "Github"}
           </Button>
           <Button
             variant="secondary"
@@ -42,7 +45,8 @@ export const NavBar = () => {
               window.open("https://docs.thesys.dev/welcome", "_blank")
             }
           >
-            Build with Thesys
+            <Wrench className="h-4 w-4 mr-1" />
+            {isMobile ? "Build" : "Build with Thesys"}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>

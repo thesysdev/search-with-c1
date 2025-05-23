@@ -2,41 +2,19 @@ import type { JSONSchema } from "openai/lib/jsonschema.mjs";
 import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.mjs";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import {
-  googleCustomSearch,
-  GoogleCustomSearchRequest,
-  GoogleCustomSearchResponseItem,
-} from "./google_cs";
-import { summarizeWebsiteContent } from "./website_content_summarizer";
-import { extractWebsiteContent } from "./website_content";
+import { googleWebSearch } from "../services/googleSearch";
+import { extractWebsiteContent, summarizeWebsiteContent } from "../services/websiteContent";
+import { GoogleCustomSearchResponseItem, TransformedWebResult } from "../types/search";
 
-type RawGoogleResult = {
-  title: string;
-  link: string;
-  snippet: string;
-  pagemap?: {
-    cse_thumbnail?: Array<{ src: string }>;
-    cse_image?: Array<{ src: string }>;
-  };
-};
-
-type TransformedResult = {
-  title: string;
-  sourceURL: string;
-  snippet: string;
-  pageSummary: string;
-  sourceImage: {
-    fullImage?: string;
-    thumbnail?: string;
-  };
-};
-
+/**
+ * Transforms Google search response to a more usable format
+ */
 function transformGoogleResponse(
   response: GoogleCustomSearchResponseItem[]
-): TransformedResult[] {
+): TransformedWebResult[] {
   if (!response || !Array.isArray(response)) return [];
 
-  return response.map((item: RawGoogleResult) => {
+  return response.map((item) => {
     return {
       title: item.title,
       sourceURL: item.link,
@@ -50,6 +28,11 @@ function transformGoogleResponse(
   });
 }
 
+/**
+ * Creates a Google web search tool for OpenAI
+ * @param writeProgress Callback to write progress updates
+ * @returns A runnable tool function for OpenAI
+ */
 export const googleWebSearchTool = (
   writeProgress: (progress: { title: string; content: string }) => void
 ): RunnableToolFunctionWithParse<{
@@ -116,22 +99,22 @@ export const googleWebSearchTool = (
       dateRestrict?: string;
     }) => {
       try {
-        const params: GoogleCustomSearchRequest = {
-          query,
-          num: 3,
-        };
-        if (cr) params.cr = cr;
-        if (gl) params.gl = gl;
-        if (siteSearch) params.siteSearch = siteSearch;
-        if (exactTerms) params.exactTerms = exactTerms;
-        if (dateRestrict) params.dateRestrict = dateRestrict;
-
         writeProgress({
-          title: "Using Google Web Search Tool",
-          content: "Searching for: " + JSON.stringify(query),
+          title: "Initiating Query Resolution",
+          content: `Finding the most relevant pages for: ${JSON.stringify(
+            query
+          )}`,
         });
 
-        const googleSearchResponse = await googleCustomSearch(params);
+        const googleSearchResponse = await googleWebSearch({
+          query,
+          num: 3,
+          cr,
+          gl,
+          siteSearch,
+          exactTerms,
+          dateRestrict,
+        });
 
         if (
           !googleSearchResponse.items ||
@@ -143,17 +126,15 @@ export const googleWebSearchTool = (
         const transformedGoogleResults = transformGoogleResponse(
           googleSearchResponse.items
         );
-        const sourceURLs = transformedGoogleResults.map(
-          (result) => result.sourceURL
-        );
 
         // Process extraction and summarization for each URL in parallel
         const combinedResults = await Promise.all(
-          sourceURLs.map(async (url) => {
+          transformedGoogleResults.map(async (result) => {
+            const url = result.sourceURL;
             try {
               writeProgress({
-                title: "Extracting content from: " + url,
-                content: "Extracting content from: " + url,
+                title: "Structured Content Extraction",
+                content: `Parsing content from ${url}...`,
               });
               // Step 1: Extract content for this specific URL
               const { results } = await extractWebsiteContent([url]);
@@ -163,13 +144,12 @@ export const googleWebSearchTool = (
               let summary = "";
               if (content) {
                 writeProgress({
-                  title: "Summarizing content",
-                  content: "Summarizing content",
+                  title: "Semantic Abstraction via LLM",
+                  content: `Summarizing content from ${url}`,
                 });
                 summary = await summarizeWebsiteContent({
                   content,
                   query,
-                  timeout: 10000,
                 });
               } else {
                 summary = "Content extraction failed.";
@@ -190,8 +170,9 @@ export const googleWebSearchTool = (
         );
 
         writeProgress({
-          title: "Combining results",
-          content: "Combining results",
+          title: "Aggregating Insights",
+          content:
+            "Merging all the summaries into a coherent, accurate answer.",
         });
 
         const webSearchResults = combinedResults.map((result, index) => ({
@@ -206,4 +187,4 @@ export const googleWebSearchTool = (
     },
     strict: true,
   },
-});
+}); 

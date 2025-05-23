@@ -1,0 +1,14 @@
+.centeredSearchContainer {
+  composes: searchContainer from "../../components/SearchInput/SearchInput.module.scss";
+  transform: translateY(0);
+}
+
+.poweredByContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: var(--secondary-text);
+  margin-top: 16px;
+  z-index: 5;
+}

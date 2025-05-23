@@ -2,8 +2,13 @@ import type { JSONSchema } from "openai/lib/jsonschema.mjs";
 import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.mjs";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { googleImageSearch } from "./google_image_search";
+import { googleImageSearch } from "../services/googleSearch";
 
+/**
+ * Creates a Google image search tool for OpenAI
+ * @param writeProgress Callback to write progress updates
+ * @returns A runnable tool function for OpenAI
+ */
 export const imageTool = (
   writeProgress: (progress: { title: string; content: string }) => void
 ): RunnableToolFunctionWithParse<{
@@ -30,13 +35,13 @@ export const imageTool = (
       })
     ) as JSONSchema,
     function: async ({ altText }: { altText: string[] }) => {
+      writeProgress({
+        title: "Using Google Image Search Tool",
+        content: "Searching for: " + JSON.stringify(altText.join(", ")),
+      });
       try {
         const results = await Promise.all(
           altText.map(async (text) => {
-            writeProgress({
-              title: "Using Google Image Search Tool",
-              content: "Searching for: " + JSON.stringify(text),
-            });
             const response = await googleImageSearch({
               query: text,
               num: 1,
@@ -58,7 +63,7 @@ export const imageTool = (
           })
         );
 
-        return results;
+        return JSON.stringify(results);
       } catch (error) {
         console.error("Error in image tool:", error);
         throw error;
@@ -66,4 +71,4 @@ export const imageTool = (
     },
     strict: true,
   },
-});
+}); 

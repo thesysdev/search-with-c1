@@ -13,7 +13,7 @@
     "@crayonai/stream": "^0.6.4",
     "@google/genai": "^1.0.0",
     "@mozilla/readability": "^0.6.0",
-    "@thesysai/genui-sdk": "^0.6.17",
+    "@thesysai/genui-sdk": "^0.6.18",
     "@types/axios": "^0.9.36",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.9.0",

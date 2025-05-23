@@ -1,20 +1,33 @@
+'use server'
+
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { transformStream } from "@crayonai/stream";
-import { tools } from "./tools";
+import { getTools } from "../tools";
+import { makeC1Response } from "@thesysai/genui-sdk/server";
 
 const client = new OpenAI({
   baseURL: "https://api.thesys.dev/v1/embed",
   apiKey: process.env.THESYS_API_KEY,
 });
 
-
+/**
+ * API route handler for ask endpoint
+ * @param req The NextRequest object
+ * @returns A streaming response
+ */
 export async function POST(req: NextRequest) {
+  const c1Response = makeC1Response();
   const { prompt, previousC1Response } = (await req.json()) as {
     prompt: string;
     previousC1Response?: string;
   };
+
+  c1Response.writeThinkItem({
+    title: "Thinking...",
+    description: "Diving into the digital depths to craft you an answer",
+  });
 
   const messages: ChatCompletionMessageParam[] = [];
 
@@ -30,11 +43,11 @@ export async function POST(req: NextRequest) {
     content: prompt,
   });
 
-  const responseStream = new TransformStream<string, string>();
-  const responseWriter = responseStream.writable.getWriter();
-
-  const t = tools((progress) => {
-    responseWriter.write(`<progress>${JSON.stringify(progress)}</progress>`);
+  const tools = getTools((progress) => {
+    c1Response.writeThinkItem({
+      title: progress.title,
+      description: progress.content,
+    });
   });
 
   const runToolsResponse = client.beta.chat.completions.runTools({
@@ -66,38 +79,37 @@ Remember to be helpful, accurate, and comprehensive in your responses while main
     ],
     stream: true,
     tool_choice: "auto",
-    tools: t,
+    tools,
   });
 
   const llmStream = await runToolsResponse;
-
-  runToolsResponse.on("message", (m) => {
-    console.log(m);
-  });
 
   transformStream(
     llmStream,
     (chunk) => {
       const contentDelta = chunk.choices[0]?.delta?.content || "";
 
-      console.log(contentDelta);
       if (contentDelta) {
-        responseWriter.write(contentDelta);
+        c1Response.writeContent(contentDelta);
       }
       return contentDelta;
     },
     {
       onEnd: () => {
-        responseWriter.close();
+        try {
+          c1Response.end();
+        } catch (error) {
+          console.error("Stream already closed:", error);
+        }
       },
     }
   );
 
-  return new Response(responseStream.readable, {
+  return new Response(c1Response.responseStream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",
     },
   });
-}
+} 

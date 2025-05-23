@@ -1,0 +1,30 @@
+.c1Container {
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+  overflow-y: auto;
+  background-color: var(--container-fill);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+  }
+
+  :global(.c1-think-container) {
+    :global(.crayon-step-title) {
+      opacity: 0.6;
+      font-size: 16px !important;
+    }
+
+    :global(.crayon-step-details) {
+      font-size: 14px !important;
+    }
+  }
+}

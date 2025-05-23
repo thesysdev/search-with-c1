@@ -1,0 +1,44 @@
+.searchContainer {
+  display: flex;
+  width: 100%;
+  max-width: 584px;
+  margin: 0 auto;
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  padding: 0 16px;
+  height: 44px;
+  background: var(--container-fill);
+  backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 5;
+  transition: all 0.3s ease-out;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--primary-text);
+    background: transparent;
+  }
+}
+
+.centeredSearchContainer {
+  composes: searchContainer;
+  transform: translateY(0);
+}
+
+.topSearchContainer {
+  composes: searchContainer;
+  max-width: 584px;
+  animation: centerToTop 0.4s ease-out forwards;
+}
+
+@keyframes centerToTop {
+  from {
+    transform: translateY(calc(50vh - 22px - 60px));
+  }
+  to {
+    transform: translateY(0);
+  }
+}
