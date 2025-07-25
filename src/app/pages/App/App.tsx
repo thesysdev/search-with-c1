@@ -25,11 +25,13 @@ export const App = () => {
     setIsClient(true);
   }, []);
 
-  const handleSearch = async () => {
-    if (searchText.length > 0 && !state.isLoading) {
-      actions.setQuery(searchText);
+  const handleSearch = async (query?: string) => {
+    const newQuery = query || searchText;
+    if (newQuery.length > 0 && !state.isLoading) {
+      setSearchText(newQuery);
+      actions.setQuery(newQuery);
       setHasSearched(true);
-      await actions.makeApiCall(searchText);
+      await actions.makeApiCall(newQuery);
     }
   };
 
@@ -67,7 +69,10 @@ export const App = () => {
             activeTab={activeTab}
             handleTabChange={handleTabChange}
             searchText={searchText}
-            setSearchText={setSearchText}
+            setSearchText={(text) => {
+              setSearchText(text);
+              handleSearch(text);
+            }}
             handleKeyDown={handleKeyDown}
             state={state}
             actions={actions}
@@ -75,7 +80,10 @@ export const App = () => {
         ) : (
           <DesktopResultsView
             searchText={searchText}
-            setSearchText={setSearchText}
+            setSearchText={(text) => {
+              setSearchText(text);
+              handleSearch(text);
+            }}
             handleKeyDown={handleKeyDown}
             state={state}
             actions={actions}

@@ -15,7 +15,7 @@ importers:
         specifier: ^0.6.4
         version: 0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20)
       '@google/genai':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1(@modelcontextprotocol/sdk@1.11.5)
       '@mozilla/readability':
         specifier: ^0.6.0

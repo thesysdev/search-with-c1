@@ -71,6 +71,7 @@ export const MobileResultsView = ({
                 query={state.query}
                 setC1Response={actions.setC1Response}
                 makeApiCall={actions.makeApiCall}
+                setSearchText={setSearchText}
                 className="w-full"
               />
             </div>

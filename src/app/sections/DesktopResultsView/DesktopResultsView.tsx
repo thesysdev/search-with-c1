@@ -52,6 +52,7 @@ export const DesktopResultsView = ({
         query={state.query}
         setC1Response={actions.setC1Response}
         makeApiCall={actions.makeApiCall}
+        setSearchText={setSearchText}
       />
     </div>
   </div>

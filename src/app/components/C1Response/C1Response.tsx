@@ -11,6 +11,7 @@ interface C1ResponseProps {
   query: string;
   setC1Response: (message: string) => void;
   makeApiCall: (message: string, currentResponse?: string) => void;
+  setSearchText: (text: string) => void;
   className?: string;
 }
 
@@ -20,6 +21,7 @@ export const C1Response = ({
   query,
   setC1Response,
   makeApiCall,
+  setSearchText,
   className,
 }: C1ResponseProps) => {
   return (
@@ -29,8 +31,9 @@ export const C1Response = ({
         c1Response={c1Response}
         isStreaming={isLoading}
         updateMessage={setC1Response}
-        onAction={({ llmFriendlyMessage }) => {
+        onAction={({ llmFriendlyMessage, humanFriendlyMessage }) => {
           if (!isLoading) {
+            setSearchText(humanFriendlyMessage);
             makeApiCall(llmFriendlyMessage, c1Response);
           }
         }}

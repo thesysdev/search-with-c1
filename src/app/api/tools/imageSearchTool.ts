@@ -3,6 +3,7 @@ import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { googleImageSearch } from "../services/googleSearch";
+import { createToolErrorMessage } from "./toolErrorHandler";
 
 /**
  * Creates a Google image search tool for OpenAI
@@ -66,9 +67,15 @@ export const imageTool = (
         return JSON.stringify(results);
       } catch (error) {
         console.error("Error in image tool:", error);
-        throw error;
+        const errorMessage = createToolErrorMessage(error, {
+          action: "searching for images",
+          userFriendlyContext: `for the following images: ${altText.join(
+            ", "
+          )}`,
+        });
+        return errorMessage;
       }
     },
     strict: true,
   },
-}); 
+});
