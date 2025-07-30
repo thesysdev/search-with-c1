@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ThemeProvider } from "@thesysai/genui-sdk";
 import { themePresets } from "@crayonai/react-ui/ThemeProvider";
 import { useUIState } from "../../hooks/useUIState";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useSearchHistory } from "../../hooks/useSearchHistory";
 import { NavBar } from "../../components/NavBar/NavBar";
 import { LandingView } from "../../sections/LandingView";
 import { MobileResultsView } from "../../sections/MobileResultsView";
@@ -14,36 +15,35 @@ import "@crayonai/react-ui/styles/index.css";
 export const App = () => {
   const isMobile = useIsMobile();
   const { state, actions } = useUIState();
-
-  const [searchText, setSearchText] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const { addSearchToHistory, loadQueryFromHistory, currentQuery, updateSearchParams } =
+    useSearchHistory(actions);
   const [isClient, setIsClient] = useState(false);
-  const [activeTab, setActiveTab] = useState("ai");
+  const [hasSearched, setHasSearched] = useState(!!currentQuery);
 
-  // This ensures we only run animations on the client side
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const handleSearch = async (query?: string) => {
-    const newQuery = query || searchText;
-    if (newQuery.length > 0 && !state.isLoading) {
-      setSearchText(newQuery);
-      actions.setQuery(newQuery);
+  useEffect(() => {
+    if (currentQuery) {
+      handleSearch(currentQuery);
+    }
+  }, [currentQuery]);
+
+  const handleSearch = useCallback(async (query: string) => {
+    if (query.length > 0 && !state.isLoading) {
       setHasSearched(true);
-      await actions.makeApiCall(newQuery);
-    }
-  };
+      const existingSearch = loadQueryFromHistory(query);
+      if (existingSearch) return;
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !state.isLoading && searchText.length > 0) {
-      handleSearch();
+      updateSearchParams(query);
+      actions.setQuery(query);
+      const response = await actions.makeApiCall(query);
+      addSearchToHistory(query, {
+        c1Response: response.c1Response,
+      });
     }
-  };
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-  };
+  }, [state.isLoading, loadQueryFromHistory, addSearchToHistory, updateSearchParams, actions]);
 
   if (!isClient) {
     return null; // or a simple loading state
@@ -60,31 +60,18 @@ export const App = () => {
         {!hasSearched ? (
           <LandingView
             isMobile={isMobile}
-            searchText={searchText}
-            setSearchText={setSearchText}
-            handleKeyDown={handleKeyDown}
+            searchText={state.query}
+            handleSearch={handleSearch}
           />
         ) : isMobile ? (
           <MobileResultsView
-            activeTab={activeTab}
-            handleTabChange={handleTabChange}
-            searchText={searchText}
-            setSearchText={(text) => {
-              setSearchText(text);
-              handleSearch(text);
-            }}
-            handleKeyDown={handleKeyDown}
+            handleSearch={handleSearch}
             state={state}
             actions={actions}
           />
         ) : (
           <DesktopResultsView
-            searchText={searchText}
-            setSearchText={(text) => {
-              setSearchText(text);
-              handleSearch(text);
-            }}
-            handleKeyDown={handleKeyDown}
+            handleSearch={handleSearch}
             state={state}
             actions={actions}
           />

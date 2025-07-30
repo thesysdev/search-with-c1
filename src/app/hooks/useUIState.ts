@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { makeApiCall } from "../utils/api";
+import { Dispatch, SetStateAction } from "react";
 
 /**
  * Type definition for the UI state.
@@ -14,6 +15,15 @@ export type UIState = {
   isLoading: boolean;
 };
 
+export type UIActions = {
+  setQuery: Dispatch<SetStateAction<string>>;
+  setC1Response: Dispatch<SetStateAction<string>>;
+  makeApiCall: (
+    searchQuery: string,
+    previousC1Response?: string
+  ) => Promise<{ c1Response: string }>;
+};
+
 /**
  * Custom hook for managing the application's UI state.
  * Provides a centralized way to manage state and API interactions.
@@ -22,7 +32,7 @@ export type UIState = {
  * - state: Current UI state
  * - actions: Functions to update state and make API calls
  */
-export const useUIState = () => {
+export const useUIState = (): { state: UIState; actions: UIActions } => {
   // State for managing the search query input
   const [query, setQuery] = useState("");
   // State for storing the API response
@@ -41,15 +51,22 @@ export const useUIState = () => {
     searchQuery: string,
     previousC1Response?: string
   ) => {
+    let finalResponse = "";
+    const responseSetter = (response: string) => {
+      finalResponse = response;
+      setC1Response(response);
+    };
+
     setC1Response("");
     await makeApiCall({
       searchQuery,
       previousC1Response,
-      setC1Response,
+      setC1Response: responseSetter,
       setIsLoading,
       abortController,
       setAbortController,
     });
+    return { c1Response: finalResponse };
   };
 
   // Return the state and actions in a structured format

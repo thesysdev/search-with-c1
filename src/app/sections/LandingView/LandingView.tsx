@@ -7,15 +7,13 @@ import styles from "./LandingView.module.scss";
 interface LandingViewProps {
   isMobile: boolean;
   searchText: string;
-  setSearchText: (text: string) => void;
-  handleKeyDown: (e: React.KeyboardEvent) => void;
+  handleSearch: (value: string) => void;
 }
 
 export const LandingView = ({
   isMobile,
   searchText,
-  setSearchText,
-  handleKeyDown,
+  handleSearch,
 }: LandingViewProps) => (
   <>
     <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
@@ -44,8 +42,7 @@ export const LandingView = ({
       </div>
       <SearchInput
         value={searchText}
-        onChange={setSearchText}
-        onKeyDown={handleKeyDown}
+        onSearch={handleSearch}
         className={styles.centeredSearchContainer}
       />
       <p className={styles.poweredByContainer}>

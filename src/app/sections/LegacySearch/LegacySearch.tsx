@@ -23,7 +23,7 @@ export default function LegacySearch({ query }: SearchPageProps) {
     try {
       const response = await googleCustomSearch({ query });
 
-      setResults(response.items);
+      setResults(response.items ?? []);
     } catch (error) {
       console.error("Error searching:", error);
     } finally {

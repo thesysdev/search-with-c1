@@ -9,11 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@crayonai/react-ui": "^0.7.13",
+    "@crayonai/react-ui": "^0.8.17",
     "@crayonai/stream": "^0.6.4",
     "@google/genai": "^1.0.1",
     "@mozilla/readability": "^0.6.0",
-    "@thesysai/genui-sdk": "^0.6.18",
+    "@thesysai/genui-sdk": "^0.6.27",
     "@types/axios": "^0.9.36",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.9.0",

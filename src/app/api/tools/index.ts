@@ -10,5 +10,4 @@ export const getTools = (
   writeProgress: (progress: { title: string; content: string }) => void
 ) => [
   googleGenAITool(writeProgress),
-  imageTool(writeProgress)
 ]; 
