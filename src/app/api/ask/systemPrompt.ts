@@ -48,4 +48,4 @@ Your absolute top priority is to create visually engaging and interactive respon
 -   Do NOT generate components for actions that cannot be executed (e.g., booking, downloading, payments).
 
 </content_guidelines>
-`
+`;

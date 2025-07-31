@@ -26,9 +26,9 @@ export const SearchInput = ({
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && searchText.length > 0) {
       setIsSearching(true);
-      
+
       onSearch(searchText);
-      
+
       setTimeout(() => {
         setIsSearching(false);
       }, 1000);

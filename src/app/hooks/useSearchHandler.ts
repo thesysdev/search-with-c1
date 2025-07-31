@@ -39,7 +39,7 @@ export const useSearchHandler = (
     async (
       displayQuery: string,
       apiQuery: string,
-      previousC1Response?: string
+      previousC1Response?: string,
     ) => {
       if (displayQuery.length === 0 || state.isLoading) {
         return;
@@ -57,8 +57,11 @@ export const useSearchHandler = (
       actions.setQuery(displayQuery);
 
       try {
-        const response = await actions.makeApiCall(apiQuery, previousC1Response);
-        
+        const response = await actions.makeApiCall(
+          apiQuery,
+          previousC1Response,
+        );
+
         if (response.aborted) {
           console.log("Request was aborted, not updating history");
           return;
@@ -106,7 +109,7 @@ export const useSearchHandler = (
       await performSearch(
         humanFriendlyMessage,
         llmFriendlyMessage,
-        state.c1Response
+        state.c1Response,
       );
     },
     [performSearch, state.c1Response],
