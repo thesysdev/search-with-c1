@@ -1,26 +1,82 @@
 "use client";
 
-import { useCallback } from "react";
-import { useSharedUIState } from "../context/UIStateContext";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useSearchHistory } from "./useSearchHistory";
+import { UIActions, UIState } from "./useUIState";
+import { useSearchParams } from "next/navigation";
+import { ApiCallResponse } from "../utils/api";
 
-export const useSearchHandler = () => {
-  const { state, actions } = useSharedUIState();
-  const { addSearchToHistory, loadQueryFromHistory, updateSearchParams } =
-    useSearchHistory();
+export const useSearchHandler = (
+  state: UIState,
+  actions: UIActions,
+): {
+  currentQuery: string;
+  handleSearch: (query: string) => Promise<void>;
+  handleC1Action: ({
+    llmFriendlyMessage,
+    humanFriendlyMessage,
+  }: {
+    llmFriendlyMessage: string;
+    humanFriendlyMessage: string;
+  }) => Promise<void>;
+} => {
+  const searchParams = useSearchParams();
+  const isSearching = useRef(false);
 
-  const handleSearch = useCallback(
-    async (query: string) => {
-      if (query.length > 0 && !state.isLoading) {
-        const existingSearch = loadQueryFromHistory(query);
-        if (existingSearch) return;
+  const currentQuery = useMemo(
+    () => decodeURIComponent(searchParams.get("q") || ""),
+    [searchParams],
+  );
 
-        updateSearchParams(query);
-        actions.setQuery(query);
-        const response = await actions.makeApiCall(query);
-        addSearchToHistory(query, {
-          c1Response: response.c1Response,
-        });
+  const {
+    addSearchToHistory,
+    loadQueryFromHistory,
+    updateSearchParams,
+    removeQueryFromHistory,
+  } = useSearchHistory(currentQuery, actions);
+
+  const performSearch = useCallback(
+    async (
+      displayQuery: string,
+      apiQuery: string,
+      previousC1Response?: string
+    ) => {
+      if (displayQuery.length === 0 || state.isLoading) {
+        return;
+      }
+
+      isSearching.current = true;
+
+      const existingSearch = loadQueryFromHistory(displayQuery);
+      if (existingSearch) {
+        isSearching.current = false;
+        return;
+      }
+
+      updateSearchParams(displayQuery);
+      actions.setQuery(displayQuery);
+
+      try {
+        const response = await actions.makeApiCall(apiQuery, previousC1Response);
+        
+        if (response.aborted) {
+          console.log("Request was aborted, not updating history");
+          return;
+        }
+
+        if (response.c1Response) {
+          addSearchToHistory(displayQuery, {
+            c1Response: response.c1Response,
+          });
+        } else if (response.error) {
+          console.error("API call failed:", response.error);
+          removeQueryFromHistory(displayQuery);
+        }
+      } catch (error) {
+        console.error("Unexpected error in makeApiCall:", error);
+        removeQueryFromHistory(displayQuery);
+      } finally {
+        isSearching.current = false;
       }
     },
     [
@@ -30,6 +86,13 @@ export const useSearchHandler = () => {
       updateSearchParams,
       actions,
     ],
+  );
+
+  const handleSearch = useCallback(
+    async (query: string) => {
+      await performSearch(query, query);
+    },
+    [performSearch],
   );
 
   const handleC1Action = useCallback(
@@ -40,35 +103,25 @@ export const useSearchHandler = () => {
       llmFriendlyMessage: string;
       humanFriendlyMessage: string;
     }) => {
-      if (
-        llmFriendlyMessage.length > 0 &&
-        humanFriendlyMessage.length > 0 &&
-        !state.isLoading
-      ) {
-        updateSearchParams(humanFriendlyMessage);
-
-        const existingSearch = loadQueryFromHistory(humanFriendlyMessage);
-        if (existingSearch) return;
-
-        actions.setQuery(humanFriendlyMessage);
-        const response = await actions.makeApiCall(
-          llmFriendlyMessage,
-          state.c1Response,
-        );
-        addSearchToHistory(humanFriendlyMessage, {
-          c1Response: response.c1Response,
-        });
-      }
+      await performSearch(
+        humanFriendlyMessage,
+        llmFriendlyMessage,
+        state.c1Response
+      );
     },
-    [
-      state.isLoading,
-      loadQueryFromHistory,
-      addSearchToHistory,
-      updateSearchParams,
-      actions,
-      state.c1Response,
-    ],
+    [performSearch, state.c1Response],
   );
 
-  return { handleSearch, handleC1Action };
+  useEffect(() => {
+    if (state.query === currentQuery) {
+      return;
+    }
+
+    if (state.isLoading && isSearching.current) {
+      actions.abortController?.abort();
+    }
+    loadQueryFromHistory(currentQuery);
+  }, [currentQuery]);
+
+  return { currentQuery, handleSearch, handleC1Action };
 };

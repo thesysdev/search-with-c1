@@ -1,10 +1,5 @@
 import { useState, Dispatch, SetStateAction } from "react";
-import { makeApiCall } from "../utils/api";
-import {
-  TransformedWebResult,
-  TransformedImageResult,
-} from "../api/types/search";
-
+import { makeApiCall, ApiCallResponse } from "../utils/api";
 /**
  * Type definition for the UI state.
  * Contains all the state variables needed for the application's UI.
@@ -24,7 +19,9 @@ export type UIActions = {
   makeApiCall: (
     searchQuery: string,
     previousC1Response?: string,
-  ) => Promise<{ c1Response: string }>;
+  ) => Promise<ApiCallResponse>;
+  abortController: AbortController | null;
+  resetState: () => void;
 };
 
 export const useUIState = (): { state: UIState; actions: UIActions } => {
@@ -41,7 +38,10 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    * Wrapper function around makeApiCall that provides necessary state handlers.
    * This keeps the component interface simple while handling all state management internally.
    */
-  const handleApiCall = async (searchQuery: string) => {
+  const handleApiCall = async (
+    searchQuery: string,
+    previousC1Response?: string,
+  ): Promise<ApiCallResponse> => {
     let finalResponse = "";
     const responseSetter = (response: string) => {
       finalResponse = response;
@@ -49,14 +49,23 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
     };
 
     setC1Response("");
-    await makeApiCall({
+    const result = await makeApiCall({
       searchQuery,
+      previousC1Response,
       setC1Response: responseSetter,
       setIsLoading,
       abortController,
       setAbortController,
     });
-    return { c1Response: finalResponse };
+
+    return result;
+  };
+
+  const resetState = () => {
+    setQuery("");
+    setC1Response("");
+    setIsLoading(false);
+    setAbortController(null);
   };
 
   return {
@@ -69,6 +78,8 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
       setQuery,
       setC1Response,
       makeApiCall: handleApiCall,
+      abortController,
+      resetState,
     },
   };
 };

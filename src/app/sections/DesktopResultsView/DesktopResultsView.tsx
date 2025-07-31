@@ -4,11 +4,9 @@ import { C1Response } from "../../components/C1Response";
 import LegacySearch from "../LegacySearch/LegacySearch";
 import styles from "./DesktopResultsView.module.scss";
 import { useSharedUIState } from "@/app/context/UIStateContext";
-import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 
 export const DesktopResultsView = () => {
-  const { state } = useSharedUIState();
-  const { handleSearch } = useSearchHandler();
+  const { state, handleSearch } = useSharedUIState();
 
   return (
     <div className="flex flex-col fixed top-12 left-0 bottom-0 right-0 bg-container">

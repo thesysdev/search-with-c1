@@ -12,22 +12,13 @@ import {
   useSharedUIState,
 } from "../../context/UIStateContext";
 import "@crayonai/react-ui/styles/index.css";
-import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 import { DesktopResultsView } from "@/app/sections/DesktopResultsView";
 import { MobileResultsView } from "@/app/sections/MobileResultsView";
 
 const AppContent = () => {
   const isMobile = useIsMobile();
-  const { state } = useSharedUIState();
-  const { currentQuery } = useSearchHistory();
-  const { handleSearch } = useSearchHandler();
+  const { state, currentQuery } = useSharedUIState();
   const hasSearched = !!currentQuery || state.isLoading;
-
-  useEffect(() => {
-    if (currentQuery && !hasSearched) {
-      handleSearch(currentQuery);
-    }
-  }, [currentQuery, hasSearched, handleSearch]);
 
   return (
     <div
@@ -38,7 +29,7 @@ const AppContent = () => {
         <NavBar />
 
         {!hasSearched ? (
-          <LandingView isMobile={isMobile} searchText={state.query} />
+          <LandingView />
         ) : isMobile ? (
           <MobileResultsView />
         ) : (

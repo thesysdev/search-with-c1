@@ -3,15 +3,13 @@ import Image from "next/image";
 import clsx from "clsx";
 import { SearchInput } from "../../components/SearchInput";
 import styles from "./LandingView.module.scss";
-import { useSearchHandler } from "@/app/hooks/useSearchHandler";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { useSharedUIState } from "@/app/context/UIStateContext";
 
-interface LandingViewProps {
-  isMobile: boolean;
-  searchText: string;
-}
+export const LandingView = () => {
+  const isMobile = useIsMobile();
+  const { state, handleSearch } = useSharedUIState();
 
-export const LandingView = ({ isMobile, searchText }: LandingViewProps) => {
-  const { handleSearch } = useSearchHandler();
   return (
     <>
       <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
@@ -39,7 +37,7 @@ export const LandingView = ({ isMobile, searchText }: LandingViewProps) => {
           />
         </div>
         <SearchInput
-          value={searchText}
+          value={state.query}
           onSearch={handleSearch}
           className={styles.centeredSearchContainer}
         />

@@ -5,15 +5,13 @@ import { C1Component } from "@thesysai/genui-sdk";
 import styles from "./C1Response.module.scss";
 import { searchImage } from "@/app/api/image_search/searchImage";
 import { useSharedUIState } from "@/app/context/UIStateContext";
-import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 
 interface C1ResponseProps {
   className?: string;
 }
 
 export const C1Response = ({ className }: C1ResponseProps) => {
-  const { state, actions } = useSharedUIState();
-  const { handleC1Action } = useSearchHandler();
+  const { state, actions, handleC1Action } = useSharedUIState();
 
   return (
     <div className={`${styles.c1Container} mb-4 mt-0 ${className || ""}`}>

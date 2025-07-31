@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Analytics } from "@vercel/analytics/next";
+import { Suspense } from "react";
+import { CenteredLoader } from "./components/Loader/CenteredLoader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <ThemeProvider initialTheme="light">{children}</ThemeProvider>
+        <ThemeProvider initialTheme="light">
+          <Suspense fallback={<CenteredLoader />}>{children}</Suspense>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

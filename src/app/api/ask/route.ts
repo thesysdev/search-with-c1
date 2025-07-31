@@ -19,43 +19,53 @@ const client = new OpenAI({
  */
 export async function POST(req: NextRequest) {
   const c1Response = makeC1Response();
-  const { prompt, previousC1Response } = (await req.json()) as {
-    prompt: string;
-    previousC1Response?: string;
-  };
 
-  c1Response.writeThinkItem({
-    title: "Thinking...",
-    description: "Diving into the digital depths to craft you an answer",
-  });
+  try {
+    // Check if request is already aborted
+    if (req.signal.aborted) {
+      return new Response("Request aborted", { status: 499 });
+    }
 
-  const messages: ChatCompletionMessageParam[] = [];
+    const { prompt, previousC1Response } = (await req.json()) as {
+      prompt: string;
+      previousC1Response?: string;
+    };
 
-  if (previousC1Response) {
-    messages.push({
-      role: "assistant",
-      content: previousC1Response,
-    });
-  }
-
-  messages.push({
-    role: "user",
-    content: prompt,
-  });
-
-  const tools = getTools((progress) => {
     c1Response.writeThinkItem({
-      title: progress.title,
-      description: progress.content,
+      title: "Thinking...",
+      description: "Diving into the digital depths to craft you an answer",
     });
-  });
 
-  const runToolsResponse = client.beta.chat.completions.runTools({
-    model: "c1/anthropic/claude-3.5-sonnet/v-20250617",
-    messages: [
-      {
-        role: "system",
-        content: `You can:
+    const messages: ChatCompletionMessageParam[] = [];
+
+    if (previousC1Response) {
+      messages.push({
+        role: "assistant",
+        content: previousC1Response,
+      });
+    }
+
+    messages.push({
+      role: "user",
+      content: prompt,
+    });
+
+    const tools = getTools((progress) => {
+      // Check if request is aborted before writing progress
+      if (req.signal.aborted) return;
+
+      c1Response.writeThinkItem({
+        title: progress.title,
+        description: progress.content,
+      });
+    });
+
+    const runToolsResponse = client.beta.chat.completions.runTools({
+      model: "c1/anthropic/claude-3.5-sonnet/v-20250617",
+      messages: [
+        {
+          role: "system",
+          content: `You can:
 - Search and retrieve real-time information from the web
 - Answer questions on any topic with up-to-date information
 - Summarize articles and web content
@@ -110,43 +120,79 @@ When responding to queries, automatically include relevant images according to t
 7. Balance visual content with textual information - images should enhance understanding, not replace substantive content.
 </image_guidelines>
 `,
-      },
-      ...messages,
-    ],
-    stream: true,
-    tool_choice: "auto",
-    parallel_tool_calls: true,
-    tools,
-  });
+        },
+        ...messages,
+      ],
+      stream: true,
+      tool_choice: "auto",
+      parallel_tool_calls: true,
+      tools,
+      signal: req.signal,
+    });
 
-  const llmStream = await runToolsResponse;
+    const llmStream = await runToolsResponse;
 
-  transformStream(
-    llmStream,
-    (chunk) => {
-      const contentDelta = chunk.choices[0]?.delta?.content || "";
+    transformStream(
+      llmStream,
+      (chunk) => {
+        // Check if request is aborted before processing chunk
+        if (req.signal.aborted) return "";
 
-      if (contentDelta) {
-        c1Response.writeContent(contentDelta);
-      }
-      return contentDelta;
-    },
-    {
-      onEnd: () => {
-        try {
-          c1Response.end();
-        } catch (error) {
-          console.error("Stream already closed:", error);
+        const contentDelta = chunk.choices[0]?.delta?.content || "";
+
+        if (contentDelta) {
+          try {
+            c1Response.writeContent(contentDelta);
+          } catch (error) {
+            // Ignore write errors if stream is aborted
+            if (!req.signal.aborted) {
+              console.error("Error writing content:", error);
+            }
+          }
         }
+        return contentDelta;
       },
-    },
-  );
+      {
+        onEnd: () => {
+          try {
+            if (!req.signal.aborted) {
+              c1Response.end();
+            }
+          } catch (error) {
+            console.error("Stream already closed:", error);
+          }
+        },
+      },
+    );
 
-  return new Response(c1Response.responseStream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
-    },
-  });
+    return new Response(c1Response.responseStream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+      },
+    });
+  } catch (error) {
+    // Handle abort errors gracefully
+    if (
+      error instanceof Error &&
+      (error.name === "AbortError" || error.message.includes("aborted"))
+    ) {
+      console.log("Request aborted");
+      try {
+        c1Response.end();
+      } catch (endError) {
+        // Ignore errors when ending aborted response
+      }
+      return new Response("Request aborted", { status: 499 });
+    }
+
+    console.error("Error in POST handler:", error);
+    try {
+      c1Response.end();
+    } catch (endError) {
+      // Ignore errors when ending error response
+    }
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }

@@ -5,12 +5,10 @@ import { C1Response } from "../../components/C1Response";
 import LegacySearch from "../LegacySearch/LegacySearch";
 import styles from "./MobileResultsView.module.scss";
 import { useSharedUIState } from "@/app/context/UIStateContext";
-import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 
 export const MobileResultsView = () => {
-  const { state, actions } = useSharedUIState();
+  const { state, actions, handleSearch } = useSharedUIState();
   const [activeTab, setActiveTab] = useState("ai");
-  const { handleSearch } = useSearchHandler();
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
