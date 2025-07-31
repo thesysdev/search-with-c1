@@ -3,38 +3,31 @@ import { SearchInput } from "../../components/SearchInput";
 import { C1Response } from "../../components/C1Response";
 import LegacySearch from "../LegacySearch/LegacySearch";
 import styles from "./DesktopResultsView.module.scss";
-import { UIActions, UIState } from "@/app/hooks/useUIState";
+import { useSharedUIState } from "@/app/context/UIStateContext";
+import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 
-interface DesktopResultsViewProps {
-  handleSearch: (value: string) => void;
-  state: UIState;
-  actions: UIActions;
-}
+export const DesktopResultsView = () => {
+  const { state } = useSharedUIState();
+  const { handleSearch } = useSearchHandler();
 
-export const DesktopResultsView = ({
-  handleSearch,
-  state,
-  actions,
-}: DesktopResultsViewProps) => (
-  <div className="flex flex-col fixed top-12 left-0 bottom-0 right-0 bg-container">
-    <div className="flex flex-col items-center w-full p-4">
-      <SearchInput
-        disabled={state.isLoading}
-        value={state.query}
-        onSearch={handleSearch}
-        className={styles.topSearchContainer}
-      />
-    </div>
-    <div className={styles.mainContainer}>
-      <div
-        className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-3xl shadow-md overflow-hidden`}
-      >
-        <LegacySearch query={state.query} />
+  return (
+    <div className="flex flex-col fixed top-12 left-0 bottom-0 right-0 bg-container">
+      <div className="flex flex-col items-center w-full p-4">
+        <SearchInput
+          disabled={state.isLoading}
+          value={state.query}
+          onSearch={handleSearch}
+          className={styles.topSearchContainer}
+        />
       </div>
-      <C1Response
-        {...state}
-        {...actions}
-      />
+      <div className={styles.mainContainer}>
+        <div
+          className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-3xl shadow-md overflow-hidden`}
+        >
+          <LegacySearch query={state.query} />
+        </div>
+        <C1Response />
+      </div>
     </div>
-  </div>
-); 
+  );
+};

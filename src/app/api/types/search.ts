@@ -98,8 +98,10 @@ export interface GoogleImageSearchRequest extends BaseGoogleSearchRequest {
 }
 
 // Complete response types
-export type GoogleWebSearchResponse = BaseGoogleSearchResponse<GoogleCustomSearchResponseItem>;
-export type GoogleImageSearchResponse = BaseGoogleSearchResponse<GoogleImageSearchResponseItem>;
+export type GoogleWebSearchResponse =
+  BaseGoogleSearchResponse<GoogleCustomSearchResponseItem>;
+export type GoogleImageSearchResponse =
+  BaseGoogleSearchResponse<GoogleImageSearchResponseItem>;
 
 // Transformed result types for web search
 export interface TransformedWebResult {
@@ -118,4 +120,4 @@ export interface TransformedImageResult {
   altText: string;
   imageUrl: string | null;
   thumbnailUrl: string | null;
-} 
+}

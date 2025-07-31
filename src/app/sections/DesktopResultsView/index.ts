@@ -1,1 +1,1 @@
-export * from './DesktopResultsView'; 
+export * from "./DesktopResultsView";

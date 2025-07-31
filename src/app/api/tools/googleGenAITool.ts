@@ -10,7 +10,7 @@ const genAI = new GoogleGenAI({
 });
 
 export const googleGenAITool = (
-  writeProgress: (progress: { title: string; content: string }) => void
+  writeProgress: (progress: { title: string; content: string }) => void,
 ): RunnableToolFunctionWithParse<{
   query: string;
 }> => ({
@@ -25,14 +25,14 @@ export const googleGenAITool = (
     parameters: zodToJsonSchema(
       z.object({
         query: z.string().describe("The search query to look up"),
-      })
+      }),
     ) as JSONSchema,
     function: async ({ query }: { query: string }) => {
       try {
         writeProgress({
           title: "Initiating Web Search",
           content: `Finding the most relevant pages for: ${JSON.stringify(
-            query
+            query,
           )}`,
         });
 

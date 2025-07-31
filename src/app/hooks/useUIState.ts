@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { makeApiCall } from "../utils/api";
-import { Dispatch, SetStateAction } from "react";
+import {
+  TransformedWebResult,
+  TransformedImageResult,
+} from "../api/types/search";
 
 /**
  * Type definition for the UI state.
@@ -20,20 +23,11 @@ export type UIActions = {
   setC1Response: Dispatch<SetStateAction<string>>;
   makeApiCall: (
     searchQuery: string,
-    previousC1Response?: string
+    previousC1Response?: string,
   ) => Promise<{ c1Response: string }>;
 };
 
-/**
- * Custom hook for managing the application's UI state.
- * Provides a centralized way to manage state and API interactions.
- *
- * @returns An object containing:
- * - state: Current UI state
- * - actions: Functions to update state and make API calls
- */
 export const useUIState = (): { state: UIState; actions: UIActions } => {
-  // State for managing the search query input
   const [query, setQuery] = useState("");
   // State for storing the API response
   const [c1Response, setC1Response] = useState("");
@@ -47,10 +41,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    * Wrapper function around makeApiCall that provides necessary state handlers.
    * This keeps the component interface simple while handling all state management internally.
    */
-  const handleApiCall = async (
-    searchQuery: string,
-    previousC1Response?: string
-  ) => {
+  const handleApiCall = async (searchQuery: string) => {
     let finalResponse = "";
     const responseSetter = (response: string) => {
       finalResponse = response;
@@ -60,7 +51,6 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
     setC1Response("");
     await makeApiCall({
       searchQuery,
-      previousC1Response,
       setC1Response: responseSetter,
       setIsLoading,
       abortController,
@@ -69,7 +59,6 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
     return { c1Response: finalResponse };
   };
 
-  // Return the state and actions in a structured format
   return {
     state: {
       query,

@@ -33,7 +33,7 @@ export const SearchInput = ({
       className={clsx(
         "flex items-center",
         styles.searchInputContainer,
-        className
+        className,
       )}
     >
       <SearchIcon className={"mr-2 text-secondary"} size={18} />

@@ -7,7 +7,7 @@ import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 export const NavBar = () => {
   const isMobile = useIsMobile();
-  
+
   return (
     <div className="fixed top-0 left-0 w-full z-10 bg-container">
       <div className="flex items-center justify-between px-6 py-3">
@@ -31,7 +31,7 @@ export const NavBar = () => {
             onClick={() =>
               window.open(
                 "https://github.com/thesysdev/search-with-c1",
-                "_blank"
+                "_blank",
               )
             }
           >

@@ -18,7 +18,7 @@ export interface ToolErrorOptions {
  */
 export function createToolErrorMessage(
   error: unknown,
-  options: ToolErrorOptions
+  options: ToolErrorOptions,
 ): string {
   const {
     action,
@@ -49,7 +49,7 @@ export function createToolErrorMessage(
  */
 function getSuggestionForError(
   errorMessage: string,
-  suggestion: string | undefined
+  suggestion: string | undefined,
 ): string {
   const lowerError = errorMessage.toLowerCase();
 

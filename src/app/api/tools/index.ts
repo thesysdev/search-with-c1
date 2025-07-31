@@ -7,7 +7,5 @@ import { googleGenAITool } from "./googleGenAITool";
  * @returns Array of runnable tool functions
  */
 export const getTools = (
-  writeProgress: (progress: { title: string; content: string }) => void
-) => [
-  googleGenAITool(writeProgress),
-]; 
+  writeProgress: (progress: { title: string; content: string }) => void,
+) => [googleGenAITool(writeProgress)];

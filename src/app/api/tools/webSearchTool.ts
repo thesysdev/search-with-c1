@@ -3,14 +3,20 @@ import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { googleWebSearch } from "../services/googleSearch";
-import { extractWebsiteContent, summarizeWebsiteContent } from "../services/websiteContent";
-import { GoogleCustomSearchResponseItem, TransformedWebResult } from "../types/search";
+import {
+  extractWebsiteContent,
+  summarizeWebsiteContent,
+} from "../services/websiteContent";
+import {
+  GoogleCustomSearchResponseItem,
+  TransformedWebResult,
+} from "../types/search";
 
 /**
  * Transforms Google search response to a more usable format
  */
 function transformGoogleResponse(
-  response: GoogleCustomSearchResponseItem[]
+  response: GoogleCustomSearchResponseItem[],
 ): TransformedWebResult[] {
   if (!response || !Array.isArray(response)) return [];
 
@@ -34,7 +40,7 @@ function transformGoogleResponse(
  * @returns A runnable tool function for OpenAI
  */
 export const googleWebSearchTool = (
-  writeProgress: (progress: { title: string; content: string }) => void
+  writeProgress: (progress: { title: string; content: string }) => void,
 ): RunnableToolFunctionWithParse<{
   query: string;
   num?: number;
@@ -68,7 +74,7 @@ export const googleWebSearchTool = (
           .string()
           .optional()
           .describe(
-            "Restrict results to a specific site (e.g., 'example.com')"
+            "Restrict results to a specific site (e.g., 'example.com')",
           ),
         exactTerms: z
           .string()
@@ -78,9 +84,9 @@ export const googleWebSearchTool = (
           .string()
           .optional()
           .describe(
-            "Limit results by date (e.g., 'd[1]' for past day, 'w[1]' for past week)"
+            "Limit results by date (e.g., 'd[1]' for past day, 'w[1]' for past week)",
           ),
-      })
+      }),
     ) as JSONSchema,
     function: async ({
       query,
@@ -102,7 +108,7 @@ export const googleWebSearchTool = (
         writeProgress({
           title: "Initiating Query Resolution",
           content: `Finding the most relevant pages for: ${JSON.stringify(
-            query
+            query,
           )}`,
         });
 
@@ -124,7 +130,7 @@ export const googleWebSearchTool = (
         }
 
         const transformedGoogleResults = transformGoogleResponse(
-          googleSearchResponse.items
+          googleSearchResponse.items,
         );
 
         // Process extraction and summarization for each URL in parallel
@@ -166,7 +172,7 @@ export const googleWebSearchTool = (
                 url,
               };
             }
-          })
+          }),
         );
 
         writeProgress({
@@ -187,4 +193,4 @@ export const googleWebSearchTool = (
     },
     strict: true,
   },
-}); 
+});

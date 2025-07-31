@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@crayonai/react-ui": "^0.8.17",
@@ -27,6 +28,7 @@
     "react-dom": "18.3.1",
     "sass": "^1.89.0",
     "zod": "^3.24.4",
+    "prettier": "^3.5.3",
     "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {

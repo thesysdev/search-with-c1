@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
@@ -139,7 +139,7 @@ When responding to queries, automatically include relevant images according to t
           console.error("Stream already closed:", error);
         }
       },
-    }
+    },
   );
 
   return new Response(c1Response.responseStream, {
@@ -149,4 +149,4 @@ When responding to queries, automatically include relevant images according to t
       Connection: "keep-alive",
     },
   });
-} 
+}

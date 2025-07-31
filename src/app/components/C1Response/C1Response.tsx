@@ -1,64 +1,28 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React from "react";
 import { C1Component } from "@thesysai/genui-sdk";
 import styles from "./C1Response.module.scss";
 import { searchImage } from "@/app/api/image_search/searchImage";
-import { UIActions, UIState } from "@/app/hooks/useUIState";
-import { useSearchHistory } from "@/app/hooks/useSearchHistory";
+import { useSharedUIState } from "@/app/context/UIStateContext";
+import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 
-interface C1ResponseProps extends UIActions, UIState {
+interface C1ResponseProps {
   className?: string;
 }
 
-export const C1Response = ({
-  isLoading,
-  c1Response,
-  query,
-  setC1Response,
-  setQuery,
-  makeApiCall,
-  className,
-}: C1ResponseProps) => {
-  const { addSearchToHistory, loadQueryFromHistory, updateSearchParams } =
-    useSearchHistory({
-      setQuery,
-      setC1Response,
-      makeApiCall,
-    });
-
-  const handleSearch = useCallback(async ({
-    llmFriendlyMessage,
-    humanFriendlyMessage,
-  }: {
-    llmFriendlyMessage: string;
-    humanFriendlyMessage: string;
-  }) => {
-    if (
-      llmFriendlyMessage.length > 0 &&
-      humanFriendlyMessage.length > 0 &&
-      !isLoading
-    ) {
-      const existingSearch = loadQueryFromHistory(humanFriendlyMessage);
-      if (existingSearch) return;
-
-      updateSearchParams(humanFriendlyMessage);
-      setQuery(humanFriendlyMessage);
-      const response = await makeApiCall(llmFriendlyMessage, c1Response);
-      addSearchToHistory(humanFriendlyMessage, {
-        c1Response: response.c1Response,
-      });
-    }
-  }, [isLoading, loadQueryFromHistory, addSearchToHistory, updateSearchParams, setQuery, makeApiCall]);
+export const C1Response = ({ className }: C1ResponseProps) => {
+  const { state, actions } = useSharedUIState();
+  const { handleC1Action } = useSearchHandler();
 
   return (
     <div className={`${styles.c1Container} mb-4 mt-0 ${className || ""}`}>
       <C1Component
-        key={query}
-        c1Response={c1Response}
-        isStreaming={isLoading}
-        updateMessage={setC1Response}
-        onAction={handleSearch}
+        key={state.query}
+        c1Response={state.c1Response}
+        isStreaming={state.isLoading}
+        updateMessage={(message: string) => actions.setC1Response(message)}
+        onAction={handleC1Action}
         // @ts-ignore
         searchImage={async (query) => {
           return await searchImage(query);

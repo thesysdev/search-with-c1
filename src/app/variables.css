@@ -55,7 +55,7 @@ body {
 }
 
 /* these are derived variable from physical variables for dark theme */
-[data-theme='dark'] {
+[data-theme="dark"] {
   color-scheme: dark;
 
   /* All Border Semantic Variables */

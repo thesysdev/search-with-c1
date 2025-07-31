@@ -12,13 +12,13 @@ export const searchImage = async (query: string) => {
     }
 
     return {
-      url: response.items[0]?.link ?? '',
-      thumbnailUrl: response.items[0]?.image?.thumbnailLink ?? '',
-    }
+      url: response.items[0]?.link ?? "",
+      thumbnailUrl: response.items[0]?.image?.thumbnailLink ?? "",
+    };
   } catch (error) {
     return {
-      url: 'https://via.placeholder.com/360x240',
-      thumbnailUrl: 'https://via.placeholder.com/360x240',
-    }
+      url: "https://via.placeholder.com/360x240",
+      thumbnailUrl: "https://via.placeholder.com/360x240",
+    };
   }
-}
+};

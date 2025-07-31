@@ -4,20 +4,13 @@ import { SearchInput } from "../../components/SearchInput";
 import { C1Response } from "../../components/C1Response";
 import LegacySearch from "../LegacySearch/LegacySearch";
 import styles from "./MobileResultsView.module.scss";
-import { UIActions, UIState } from "@/app/hooks/useUIState";
+import { useSharedUIState } from "@/app/context/UIStateContext";
+import { useSearchHandler } from "@/app/hooks/useSearchHandler";
 
-interface MobileResultsViewProps {
-  state: UIState;
-  actions: UIActions;
-  handleSearch: (value: string) => void;
-}
-
-export const MobileResultsView = ({
-  handleSearch,
-  state,
-  actions,
-}: MobileResultsViewProps) => {
+export const MobileResultsView = () => {
+  const { state, actions } = useSharedUIState();
   const [activeTab, setActiveTab] = useState("ai");
+  const { handleSearch } = useSearchHandler();
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -53,7 +46,7 @@ export const MobileResultsView = ({
             </TabsContent>
             <TabsContent value="ai" className="w-full h-full relative">
               <div className="absolute inset-0 w-full h-full">
-                <C1Response {...state} {...actions} className="w-full" />
+                <C1Response className="w-full" />
               </div>
             </TabsContent>
           </Tabs>

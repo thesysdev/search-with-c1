@@ -88,4 +88,4 @@ export const makeApiCall = async ({
     setIsLoading(false);
     setAbortController(null);
   }
-}; 
+};

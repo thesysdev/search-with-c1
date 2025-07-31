@@ -11,7 +11,7 @@ import { createToolErrorMessage } from "./toolErrorHandler";
  * @returns A runnable tool function for OpenAI
  */
 export const imageTool = (
-  writeProgress: (progress: { title: string; content: string }) => void
+  writeProgress: (progress: { title: string; content: string }) => void,
 ): RunnableToolFunctionWithParse<{
   altText: string[];
 }> => ({
@@ -33,7 +33,7 @@ export const imageTool = (
         altText: z
           .array(z.string())
           .describe("An array of alt texts for the images"),
-      })
+      }),
     ) as JSONSchema,
     function: async ({ altText }: { altText: string[] }) => {
       writeProgress({
@@ -61,7 +61,7 @@ export const imageTool = (
             });
 
             return images;
-          })
+          }),
         );
 
         return JSON.stringify(results);
@@ -70,7 +70,7 @@ export const imageTool = (
         const errorMessage = createToolErrorMessage(error, {
           action: "searching for images",
           userFriendlyContext: `for the following images: ${altText.join(
-            ", "
+            ", ",
           )}`,
         });
         return errorMessage;
