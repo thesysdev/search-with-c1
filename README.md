@@ -75,7 +75,7 @@ Unlike traditional search engines that show a list of links or AI platforms that
 
    Google Keys for image & web search. Read more about generating these keys here: https://developers.google.com/custom-search/v1/introduction
 
-   Gemini for summarization. Generate a key at https://aistudio.google.com/apikey
+   Gemini for GEN-AI search. Generate a key at https://aistudio.google.com/apikey
 
 ### Development
 

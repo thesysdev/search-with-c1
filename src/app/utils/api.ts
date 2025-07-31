@@ -18,10 +18,20 @@ export type ApiCallParams = {
 };
 
 /**
+ * Response type for the makeApiCall function
+ */
+export type ApiCallResponse = {
+  c1Response?: string;
+  aborted: boolean;
+  error?: string;
+};
+
+/**
  * Makes an API call to the /api/ask endpoint with streaming response handling.
  * Supports request cancellation and manages loading states.
  *
  * @param params - Object containing all necessary parameters and callbacks
+ * @returns Promise<ApiCallResponse> - Object containing response data and status
  */
 export const makeApiCall = async ({
   searchQuery,
@@ -30,7 +40,7 @@ export const makeApiCall = async ({
   setIsLoading,
   abortController,
   setAbortController,
-}: ApiCallParams) => {
+}: ApiCallParams): Promise<ApiCallResponse> => {
   try {
     // Cancel any ongoing request before starting a new one
     if (abortController) {
@@ -81,11 +91,29 @@ export const makeApiCall = async ({
         break;
       }
     }
+
+    // Return successful response
+    return {
+      c1Response: streamResponse,
+      aborted: false,
+    };
   } catch (error) {
-    console.error("Error in makeApiCall:", error);
+    // Handle abort errors gracefully
+    if (error instanceof Error && error.name === "AbortError") {
+      console.log("Request was aborted");
+      return {
+        aborted: true,
+      };
+    } else {
+      console.error("Error in makeApiCall:", error);
+      return {
+        aborted: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
   } finally {
     // Clean up: reset loading state and abort controller
     setIsLoading(false);
     setAbortController(null);
   }
-}; 
+};

@@ -1,9 +1,9 @@
-'use server'
+"use server";
 
 import { GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import axios from "axios";
-import { Readability } from '@mozilla/readability';
-import { JSDOM } from 'jsdom';
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
 
 // Types for website content extraction
 export interface ExtractWebsiteContentRequest {
@@ -29,7 +29,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
  * @returns ExtractWebsiteContentResponse
  */
 export async function extractWebsiteContent(
-  urls: string[]
+  urls: string[],
 ): Promise<ExtractWebsiteContentResponse> {
   try {
     const results: ExtractWebsiteContentResult[] = [];
@@ -37,8 +37,8 @@ export async function extractWebsiteContent(
     const axiosInstance = axios.create({
       timeout: 15000,
       headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
       },
     });
 
@@ -46,7 +46,6 @@ export async function extractWebsiteContent(
     await Promise.all(
       urls.map(async (url) => {
         try {
-
           // Simple content extraction
           const response = await axiosInstance.get(url);
 
@@ -69,7 +68,7 @@ export async function extractWebsiteContent(
             error: error instanceof Error ? error.message : String(error),
           });
         }
-      })
+      }),
     );
 
     return { results };
@@ -94,7 +93,7 @@ export interface SummarizeWebsiteContentRequest {
  * @returns A string containing the summarized content
  */
 export async function summarizeWebsiteContent(
-  params: SummarizeWebsiteContentRequest
+  params: SummarizeWebsiteContentRequest,
 ): Promise<string> {
   const { content, query, timeout = 15000 } = params;
 

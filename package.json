@@ -6,14 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "@crayonai/react-ui": "^0.7.13",
+    "@crayonai/react-ui": "^0.8.17",
     "@crayonai/stream": "^0.6.4",
-    "@google/genai": "^1.0.0",
+    "@google/genai": "^1.0.1",
     "@mozilla/readability": "^0.6.0",
-    "@thesysai/genui-sdk": "^0.6.18",
+    "@thesysai/genui-sdk": "^0.6.27",
     "@types/axios": "^0.9.36",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.9.0",
@@ -27,6 +28,7 @@
     "react-dom": "18.3.1",
     "sass": "^1.89.0",
     "zod": "^3.24.4",
+    "prettier": "^3.5.3",
     "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {

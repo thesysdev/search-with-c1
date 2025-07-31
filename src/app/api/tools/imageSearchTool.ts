@@ -3,6 +3,7 @@ import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { googleImageSearch } from "../services/googleSearch";
+import { createToolErrorMessage } from "./toolErrorHandler";
 
 /**
  * Creates a Google image search tool for OpenAI
@@ -10,7 +11,7 @@ import { googleImageSearch } from "../services/googleSearch";
  * @returns A runnable tool function for OpenAI
  */
 export const imageTool = (
-  writeProgress: (progress: { title: string; content: string }) => void
+  writeProgress: (progress: { title: string; content: string }) => void,
 ): RunnableToolFunctionWithParse<{
   altText: string[];
 }> => ({
@@ -32,7 +33,7 @@ export const imageTool = (
         altText: z
           .array(z.string())
           .describe("An array of alt texts for the images"),
-      })
+      }),
     ) as JSONSchema,
     function: async ({ altText }: { altText: string[] }) => {
       writeProgress({
@@ -60,15 +61,21 @@ export const imageTool = (
             });
 
             return images;
-          })
+          }),
         );
 
         return JSON.stringify(results);
       } catch (error) {
         console.error("Error in image tool:", error);
-        throw error;
+        const errorMessage = createToolErrorMessage(error, {
+          action: "searching for images",
+          userFriendlyContext: `for the following images: ${altText.join(
+            ", ",
+          )}`,
+        });
+        return errorMessage;
       }
     },
     strict: true,
   },
-}); 
+});

@@ -1,51 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { ThemeProvider } from "@thesysai/genui-sdk";
 import { themePresets } from "@crayonai/react-ui/ThemeProvider";
-import { useUIState } from "../../hooks/useUIState";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useSearchHistory } from "../../hooks/useSearchHistory";
 import { NavBar } from "../../components/NavBar/NavBar";
 import { LandingView } from "../../sections/LandingView";
-import { MobileResultsView } from "../../sections/MobileResultsView";
-import { DesktopResultsView } from "../../sections/DesktopResultsView";
+import {
+  UIStateProvider,
+  useSharedUIState,
+} from "../../context/UIStateContext";
 import "@crayonai/react-ui/styles/index.css";
+import { DesktopResultsView } from "@/app/sections/DesktopResultsView";
+import { MobileResultsView } from "@/app/sections/MobileResultsView";
 
-export const App = () => {
+const AppContent = () => {
   const isMobile = useIsMobile();
-  const { state, actions } = useUIState();
-
-  const [searchText, setSearchText] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-  const [activeTab, setActiveTab] = useState("ai");
-
-  // This ensures we only run animations on the client side
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const handleSearch = async () => {
-    if (searchText.length > 0 && !state.isLoading) {
-      actions.setQuery(searchText);
-      setHasSearched(true);
-      await actions.makeApiCall(searchText);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !state.isLoading && searchText.length > 0) {
-      handleSearch();
-    }
-  };
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-  };
-
-  if (!isClient) {
-    return null; // or a simple loading state
-  }
+  const { state, currentQuery } = useSharedUIState();
+  const hasSearched = !!currentQuery || state.isLoading;
 
   return (
     <div
@@ -56,32 +29,19 @@ export const App = () => {
         <NavBar />
 
         {!hasSearched ? (
-          <LandingView
-            isMobile={isMobile}
-            searchText={searchText}
-            setSearchText={setSearchText}
-            handleKeyDown={handleKeyDown}
-          />
+          <LandingView />
         ) : isMobile ? (
-          <MobileResultsView
-            activeTab={activeTab}
-            handleTabChange={handleTabChange}
-            searchText={searchText}
-            setSearchText={setSearchText}
-            handleKeyDown={handleKeyDown}
-            state={state}
-            actions={actions}
-          />
+          <MobileResultsView />
         ) : (
-          <DesktopResultsView
-            searchText={searchText}
-            setSearchText={setSearchText}
-            handleKeyDown={handleKeyDown}
-            state={state}
-            actions={actions}
-          />
+          <DesktopResultsView />
         )}
       </ThemeProvider>
     </div>
   );
-}; 
+};
+
+export const App = () => (
+  <UIStateProvider>
+    <AppContent />
+  </UIStateProvider>
+);

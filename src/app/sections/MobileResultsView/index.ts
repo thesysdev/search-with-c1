@@ -1,1 +1,1 @@
-export * from './MobileResultsView'; 
+export * from "./MobileResultsView";

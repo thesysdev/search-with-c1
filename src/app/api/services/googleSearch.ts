@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   GoogleWebSearchRequest,
   GoogleWebSearchResponse,
   GoogleImageSearchRequest,
-  GoogleImageSearchResponse
-} from '../types/search';
+  GoogleImageSearchResponse,
+} from "../types/search";
 
 const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX_KEY;
@@ -15,10 +15,10 @@ const cx = process.env.GOOGLE_CX_KEY;
  * @returns GoogleWebSearchResponse
  */
 export async function googleWebSearch(
-  params: GoogleWebSearchRequest
+  params: GoogleWebSearchRequest,
 ): Promise<GoogleWebSearchResponse> {
-  const { 
-    query, 
+  const {
+    query,
     num = 10,
     cr,
     gl,
@@ -26,8 +26,8 @@ export async function googleWebSearch(
     exactTerms,
     dateRestrict,
   } = params;
-  
-  const url = 'https://www.googleapis.com/customsearch/v1';
+
+  const url = "https://www.googleapis.com/customsearch/v1";
   const response = await axios.get<GoogleWebSearchResponse>(url, {
     params: {
       key: apiKey,
@@ -50,27 +50,27 @@ export async function googleWebSearch(
  * @returns GoogleImageSearchResponse
  */
 export async function googleImageSearch(
-  params: GoogleImageSearchRequest
+  params: GoogleImageSearchRequest,
 ): Promise<GoogleImageSearchResponse> {
-  const { 
-    query, 
+  const {
+    query,
     num = 10,
     start = 1,
-    safe = 'active',
+    safe = "active",
     imgSize,
     imgType,
     imgColorType,
-    imgDominantColor
+    imgDominantColor,
   } = params;
-  
+
   const axiosInstance = axios.create({
-    baseURL: 'https://www.googleapis.com/customsearch/v1',
+    baseURL: "https://www.googleapis.com/customsearch/v1",
   });
-  
-  const response = await axiosInstance.get<GoogleImageSearchResponse>('', {
+
+  const response = await axiosInstance.get<GoogleImageSearchResponse>("", {
     params: {
       q: query,
-      searchType: 'image',
+      searchType: "image",
       key: apiKey,
       cx: cx,
       num: num,
@@ -79,9 +79,9 @@ export async function googleImageSearch(
       imgSize,
       imgType,
       imgColorType,
-      imgDominantColor
+      imgDominantColor,
     },
   });
-  
+
   return response.data;
-} 
+}

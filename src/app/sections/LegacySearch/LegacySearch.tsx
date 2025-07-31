@@ -3,7 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import SearchResults from "./SearchResults";
 import Image from "next/image";
-import { GoogleCustomSearchResponseItem, googleCustomSearch } from "@/app/api/web_search";
+import {
+  GoogleCustomSearchResponseItem,
+  googleCustomSearch,
+} from "@/app/api/web_search";
 
 interface SearchPageProps {
   query: string;
@@ -23,7 +26,7 @@ export default function LegacySearch({ query }: SearchPageProps) {
     try {
       const response = await googleCustomSearch({ query });
 
-      setResults(response.items);
+      setResults(response.items ?? []);
     } catch (error) {
       console.error("Error searching:", error);
     } finally {

@@ -20,7 +20,7 @@ export const TextLoader = ({
       spread={5}
       className={clsx(
         "[--base-color:#5b5b5b] [--base-gradient-color:#dcdcdc]",
-        className
+        className,
       )}
     >
       {text}
