@@ -4,11 +4,23 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import type { JSONSchema } from "openai/lib/jsonschema.mjs";
 import { createToolErrorMessage } from "./toolErrorHandler";
-import { addCitations } from "./utils/addCitation";
 
 const genAI = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY as string,
 });
+
+const processResponse = (response: any) => {
+  const text = response.text;
+  const citations: { uri: string; title: string }[] =
+    response.candidates?.[0]?.groundingMetadata?.groundingChunks.map(
+      (chunk: any) => chunk.web,
+    );
+
+  return {
+    text,
+    citations,
+  };
+};
 
 export const googleGenAITool = (
   writeProgress: (progress: { title: string; content: string }) => void,
@@ -51,7 +63,7 @@ export const googleGenAITool = (
             "Merging all the summaries into a coherent, accurate answer.",
         });
 
-        return addCitations(response);
+        return processResponse(response);
       } catch (error) {
         const errorMessage = createToolErrorMessage(error, {
           action: "performing a web search",
