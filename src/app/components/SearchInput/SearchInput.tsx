@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./SearchInput.module.scss";
-import { SearchIcon } from "lucide-react";
+import { RefreshCcwIcon, SearchIcon, StopCircleIcon } from "lucide-react";
 import clsx from "clsx";
+import { useSharedUIState } from "@/app/context/UIStateContext";
+import { IconButton } from "@crayonai/react-ui";
 
 interface SearchInputProps {
   value: string;
@@ -16,6 +18,7 @@ export const SearchInput = ({
   onSearch,
   className,
 }: SearchInputProps) => {
+  const { state, refetchQueryResponse, actions } = useSharedUIState();
   const [searchText, setSearchText] = useState(value);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -57,6 +60,24 @@ export const SearchInput = ({
         onKeyDown={handleKeyDown}
         autoFocus
       />
+      {state.isLoading ? (
+        <IconButton
+          icon={<StopCircleIcon />}
+          variant="tertiary"
+          className="ml-1"
+          onClick={() => {
+            actions.abortController?.abort();
+          }}
+        />
+      ) : state.c1Response ? (
+        <IconButton
+          icon={<RefreshCcwIcon />}
+          variant="tertiary"
+          className="ml-1"
+          size="extra-small"
+          onClick={() => refetchQueryResponse(searchText)}
+        />
+      ) : null}
     </div>
   );
 };

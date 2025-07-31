@@ -19,6 +19,7 @@ export const useSearchHandler = (
     llmFriendlyMessage: string;
     humanFriendlyMessage: string;
   }) => Promise<void>;
+  refetchQueryResponse: (query: string) => Promise<void>;
 } => {
   const searchParams = useSearchParams();
   const isSearching = useRef(false);
@@ -115,6 +116,14 @@ export const useSearchHandler = (
     [performSearch, state.c1Response],
   );
 
+  const refetchQueryResponse = useCallback(
+    async (query: string) => {
+      removeQueryFromHistory(query);
+      await performSearch(query, query);
+    },
+    [performSearch],
+  );
+
   useEffect(() => {
     if (state.query === currentQuery) {
       return;
@@ -126,5 +135,5 @@ export const useSearchHandler = (
     loadQueryFromHistory(currentQuery);
   }, [currentQuery]);
 
-  return { currentQuery, handleSearch, handleC1Action };
+  return { currentQuery, handleSearch, handleC1Action, refetchQueryResponse };
 };

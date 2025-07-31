@@ -12,15 +12,10 @@ const UIStateContext = createContext<UIStateContextType | undefined>(undefined);
 
 export const UIStateProvider = ({ children }: { children: ReactNode }) => {
   const { state, actions } = useUIState();
-  const { handleSearch, handleC1Action, currentQuery } = useSearchHandler(
-    state,
-    actions,
-  );
+  const searchHandler = useSearchHandler(state, actions);
 
   return (
-    <UIStateContext.Provider
-      value={{ state, actions, handleSearch, handleC1Action, currentQuery }}
-    >
+    <UIStateContext.Provider value={{ state, actions, ...searchHandler }}>
       {children}
     </UIStateContext.Provider>
   );

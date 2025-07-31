@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { UIActions, UIState } from "./useUIState";
+import { isValidC1Response } from "../utils/isValidC1Response";
 
 const SESSION_STORAGE_KEY = "search-history";
 const MAX_HISTORY_LENGTH = 10;
@@ -46,10 +47,10 @@ export const useSearchHistory = (currentQuery: string, actions: UIActions) => {
   );
 
   const addSearchToHistory = useCallback(
-    (
-      query: string,
-      response: Omit<UIState, "query" | "isError" | "isLoading">,
-    ) => {
+    (query: string, response: Omit<UIState, "query" | "isLoading">) => {
+      if (!isValidC1Response(response.c1Response)) {
+        return;
+      }
       const newEntry: SearchEntry = { query, response, timestamp: Date.now() };
       const savedHistory = sessionStorage.getItem(SESSION_STORAGE_KEY);
       let updatedHistory: SearchEntry[] = savedHistory

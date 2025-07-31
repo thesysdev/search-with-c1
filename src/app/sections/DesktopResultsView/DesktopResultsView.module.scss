@@ -23,6 +23,10 @@
 .searchResultsContainer {
   border-radius: 16px;
   background-color: var(--background-fill);
+
+  @media (max-width: 1079px) {
+    display: none;
+  }
 }
 
 @keyframes fadeIn {
