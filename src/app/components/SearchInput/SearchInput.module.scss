@@ -10,7 +10,7 @@
   background: var(--container-fill);
   backdrop-filter: blur(8px);
   position: relative;
-  z-index: 5;
+  z-index: 100;
   transition: all 0.3s ease-out;
 
   input {
@@ -20,6 +20,69 @@
     font-size: 16px;
     color: var(--primary-text);
     background: transparent;
+  }
+}
+
+.searchGlow {
+  border-color: rgba(139, 92, 246, 0.6) !important;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+      transparent 0deg,
+      transparent 30deg,
+      rgba(139, 92, 246, 0.2) 45deg,
+      rgba(147, 51, 234, 0.4) 60deg,
+      rgba(168, 85, 247, 0.6) 75deg,
+      rgba(139, 92, 246, 0.8) 90deg,
+      rgba(168, 85, 247, 1) 120deg,
+      rgba(139, 92, 246, 0.8) 150deg,
+      transparent 165deg,
+      transparent 195deg,
+      rgba(139, 92, 246, 0.8) 210deg,
+      rgba(168, 85, 247, 1) 240deg,
+      rgba(139, 92, 246, 0.8) 270deg,
+      rgba(168, 85, 247, 0.6) 285deg,
+      rgba(147, 51, 234, 0.4) 300deg,
+      rgba(139, 92, 246, 0.2) 315deg,
+      transparent 330deg,
+      transparent 360deg
+    );
+    border-radius: 20px;
+    animation: revolveGlow 2s linear infinite;
+    z-index: -1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    bottom: 1px;
+    background: var(--container-fill);
+    border-radius: 17px;
+    z-index: -1;
+  }
+
+  /* Add ambient glow */
+  box-shadow:
+    0 0 10px rgba(139, 92, 246, 0.3),
+    0 0 10px rgba(139, 92, 246, 0.2);
+}
+
+@keyframes revolveGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

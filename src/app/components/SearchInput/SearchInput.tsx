@@ -17,6 +17,7 @@ export const SearchInput = ({
   className,
 }: SearchInputProps) => {
   const [searchText, setSearchText] = useState(value);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     setSearchText(value);
@@ -24,7 +25,13 @@ export const SearchInput = ({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && searchText.length > 0) {
+      setIsSearching(true);
+      
       onSearch(searchText);
+      
+      setTimeout(() => {
+        setIsSearching(false);
+      }, 1000);
     }
   };
 
@@ -32,7 +39,10 @@ export const SearchInput = ({
     <div
       className={clsx(
         "flex items-center",
-        styles.searchInputContainer,
+        styles.searchContainer,
+        {
+          [styles.searchGlow]: isSearching,
+        },
         className,
       )}
     >
