@@ -9,7 +9,7 @@ import { makeC1Response } from "@thesysai/genui-sdk/server";
 import { SYSTEM_PROMPT } from "./systemPrompt";
 
 const client = new OpenAI({
-  baseURL: "https://api.dev.thesys.dev/v1/embed",
+  baseURL: "https://api.thesys.dev/v1/embed",
   apiKey: process.env.THESYS_API_KEY,
 });
 
