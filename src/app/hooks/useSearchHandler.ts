@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useSearchHistory } from "./useSearchHistory";
 import { UIActions, UIState } from "./useUIState";
 import { useSearchParams } from "next/navigation";
-import { ApiCallResponse } from "../utils/api";
 
 export const useSearchHandler = (
   state: UIState,
@@ -25,7 +24,11 @@ export const useSearchHandler = (
   const isSearching = useRef(false);
 
   const currentQuery = useMemo(
-    () => decodeURIComponent(searchParams.get("q") || ""),
+    () => {
+      const query = decodeURIComponent(searchParams.get("q") || "");
+      if (query.length) actions.setInitialSearch(false);
+      return query;
+    },
     [searchParams],
   );
 
@@ -47,6 +50,8 @@ export const useSearchHandler = (
       }
 
       isSearching.current = true;
+
+      actions.setInitialSearch(false);
 
       const existingSearch = loadQueryFromHistory(displayQuery);
       if (existingSearch) {
@@ -71,6 +76,7 @@ export const useSearchHandler = (
         if (response.c1Response) {
           addSearchToHistory(displayQuery, {
             c1Response: response.c1Response,
+            initialSearch: false,
           });
         } else if (response.error) {
           console.error("API call failed:", response.error);
@@ -132,7 +138,7 @@ export const useSearchHandler = (
     if (state.isLoading && isSearching.current) {
       actions.abortController?.abort();
     }
-    loadQueryFromHistory(currentQuery);
+    handleSearch(currentQuery);
   }, [currentQuery]);
 
   return { currentQuery, handleSearch, handleC1Action, refetchQueryResponse };

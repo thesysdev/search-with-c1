@@ -43,7 +43,7 @@ export const useSearchHistory = (currentQuery: string, actions: UIActions) => {
       params.set("q", encodeURIComponent(query));
       router.push(`${pathname}?${params.toString()}`);
     },
-    [pathname, router],
+    [pathname, router, currentQuery],
   );
 
   const addSearchToHistory = useCallback(

@@ -5,6 +5,7 @@ import { C1Response } from "../../components/C1Response";
 import LegacySearch from "../LegacySearch/LegacySearch";
 import styles from "./MobileResultsView.module.scss";
 import { useSharedUIState } from "@/app/context/UIStateContext";
+import clsx from "clsx";
 
 export const MobileResultsView = () => {
   const { state, actions, handleSearch } = useSharedUIState();
@@ -21,7 +22,7 @@ export const MobileResultsView = () => {
           value={state.query}
           disabled={state.isLoading}
           onSearch={handleSearch}
-          className={styles.topSearchContainer}
+          className={clsx(!state.initialSearch && styles.topSearchContainer)}
         />
       </div>
       <div className={styles.mainContainer}>

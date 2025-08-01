@@ -1,4 +1,4 @@
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useRef } from "react";
 import { makeApiCall, ApiCallResponse } from "../utils/api";
 /**
  * Type definition for the UI state.
@@ -11,14 +11,17 @@ export type UIState = {
   c1Response: string;
   /** Whether an API request is currently in progress */
   isLoading: boolean;
+  /** Whether it is the initial search */
+  initialSearch: boolean;
 };
 
 export type UIActions = {
   setQuery: Dispatch<SetStateAction<string>>;
   setC1Response: Dispatch<SetStateAction<string>>;
+  setInitialSearch: (isInitialSearch: boolean) => void;
   makeApiCall: (
     searchQuery: string,
-    previousC1Response?: string,
+    previousC1Response?: string
   ) => Promise<ApiCallResponse>;
   abortController: AbortController | null;
   resetState: () => void;
@@ -33,6 +36,8 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
   // State for managing request cancellation
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
+  // State for tracking if it is the initial search
+  const initialSearch = useRef(true);
 
   /**
    * Wrapper function around makeApiCall that provides necessary state handlers.
@@ -40,7 +45,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    */
   const handleApiCall = async (
     searchQuery: string,
-    previousC1Response?: string,
+    previousC1Response?: string
   ): Promise<ApiCallResponse> => {
     let finalResponse = "";
     const responseSetter = (response: string) => {
@@ -65,6 +70,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
     setQuery("");
     setC1Response("");
     setIsLoading(false);
+    initialSearch.current = true;
     setAbortController(null);
   };
 
@@ -73,6 +79,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
       query,
       c1Response,
       isLoading,
+      initialSearch: initialSearch.current,
     },
     actions: {
       setQuery,
@@ -80,6 +87,9 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
       makeApiCall: handleApiCall,
       abortController,
       resetState,
+      setInitialSearch: (isInitialSearch: boolean) => {
+        initialSearch.current = isInitialSearch;
+      },
     },
   };
 };
