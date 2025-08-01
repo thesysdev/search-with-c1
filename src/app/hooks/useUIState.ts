@@ -1,4 +1,5 @@
 import { useState, Dispatch, SetStateAction, useRef } from "react";
+
 import { makeApiCall, ApiCallResponse } from "../utils/api";
 /**
  * Type definition for the UI state.
@@ -21,7 +22,7 @@ export type UIActions = {
   setInitialSearch: (isInitialSearch: boolean) => void;
   makeApiCall: (
     searchQuery: string,
-    previousC1Response?: string
+    previousC1Response?: string,
   ) => Promise<ApiCallResponse>;
   abortController: AbortController | null;
   resetState: () => void;
@@ -45,19 +46,13 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    */
   const handleApiCall = async (
     searchQuery: string,
-    previousC1Response?: string
+    previousC1Response?: string,
   ): Promise<ApiCallResponse> => {
-    let finalResponse = "";
-    const responseSetter = (response: string) => {
-      finalResponse = response;
-      setC1Response(response);
-    };
-
     setC1Response("");
     const result = await makeApiCall({
       searchQuery,
       previousC1Response,
-      setC1Response: responseSetter,
+      setC1Response,
       setIsLoading,
       abortController,
       setAbortController,

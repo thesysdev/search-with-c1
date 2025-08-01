@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@crayonai/react-ui";
-import Image from "next/image";
 import { ArrowRight, Github, Wrench } from "lucide-react";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
+import Image from "next/image";
 import Link from "next/link";
+
 import { useSharedUIState } from "@/app/context/UIStateContext";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 export const NavBar = () => {
   const isMobile = useIsMobile();

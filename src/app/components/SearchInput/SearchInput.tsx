@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import styles from "./SearchInput.module.scss";
-import { RefreshCcwIcon, SearchIcon, StopCircleIcon } from "lucide-react";
-import clsx from "clsx";
-import { useSharedUIState } from "@/app/context/UIStateContext";
 import { IconButton } from "@crayonai/react-ui";
+import clsx from "clsx";
+import { RefreshCcwIcon, SearchIcon, StopCircleIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+
+import { useSharedUIState } from "@/app/context/UIStateContext";
+
+import styles from "./SearchInput.module.scss";
 
 interface SearchInputProps {
   value: string;

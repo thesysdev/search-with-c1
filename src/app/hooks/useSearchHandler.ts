@@ -1,9 +1,10 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+
 import { useSearchHistory } from "./useSearchHistory";
 import { UIActions, UIState } from "./useUIState";
-import { useSearchParams } from "next/navigation";
 
 export const useSearchHandler = (
   state: UIState,
@@ -23,14 +24,11 @@ export const useSearchHandler = (
   const searchParams = useSearchParams();
   const isSearching = useRef(false);
 
-  const currentQuery = useMemo(
-    () => {
-      const query = decodeURIComponent(searchParams.get("q") || "");
-      if (query.length) actions.setInitialSearch(false);
-      return query;
-    },
-    [searchParams],
-  );
+  const currentQuery = useMemo(() => {
+    const query = decodeURIComponent(searchParams.get("q") || "");
+    if (query.length) actions.setInitialSearch(false);
+    return query;
+  }, [searchParams, actions]);
 
   const {
     addSearchToHistory,
@@ -95,6 +93,7 @@ export const useSearchHandler = (
       addSearchToHistory,
       updateSearchParams,
       actions,
+      removeQueryFromHistory,
     ],
   );
 
@@ -127,7 +126,7 @@ export const useSearchHandler = (
       removeQueryFromHistory(query);
       await performSearch(query, query);
     },
-    [performSearch],
+    [performSearch, removeQueryFromHistory],
   );
 
   useEffect(() => {
@@ -138,7 +137,11 @@ export const useSearchHandler = (
     if (state.isLoading && isSearching.current) {
       actions.abortController?.abort();
     }
-    handleSearch(currentQuery);
+    const existingSearch = loadQueryFromHistory(currentQuery);
+
+    if (!existingSearch) {
+      handleSearch(currentQuery);
+    }
   }, [currentQuery]);
 
   return { currentQuery, handleSearch, handleC1Action, refetchQueryResponse };

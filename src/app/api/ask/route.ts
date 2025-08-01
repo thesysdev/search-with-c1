@@ -1,11 +1,13 @@
 "use server";
 
+import { transformStream } from "@crayonai/stream";
+import { makeC1Response } from "@thesysai/genui-sdk/server";
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
-import { transformStream } from "@crayonai/stream";
+
 import { getTools } from "../tools";
-import { makeC1Response } from "@thesysai/genui-sdk/server";
+
 import { SYSTEM_PROMPT } from "./systemPrompt";
 
 const client = new OpenAI({
@@ -128,7 +130,7 @@ export async function POST(req: NextRequest) {
       console.log("Request aborted");
       try {
         c1Response.end();
-      } catch (endError) {
+      } catch {
         // Ignore errors when ending aborted response
       }
       return new Response("Request aborted", { status: 499 });
@@ -137,7 +139,7 @@ export async function POST(req: NextRequest) {
     console.error("Error in POST handler:", error);
     try {
       c1Response.end();
-    } catch (endError) {
+    } catch {
       // Ignore errors when ending error response
     }
     return new Response("Internal Server Error", { status: 500 });

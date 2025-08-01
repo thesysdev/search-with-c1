@@ -1,7 +1,10 @@
 import React from "react";
-import styles from "./SearchResults.module.scss";
-import { TextLoader } from "../../components/Loader/TextLoader";
+
 import { GoogleCustomSearchResponseItem } from "@/app/api/types/search";
+
+import { TextLoader } from "../../components/Loader/TextLoader";
+
+import styles from "./SearchResults.module.scss";
 
 interface SearchResultsProps {
   results: GoogleCustomSearchResponseItem[];

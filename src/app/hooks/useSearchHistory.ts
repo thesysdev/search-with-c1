@@ -1,8 +1,10 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { UIActions, UIState } from "./useUIState";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect } from "react";
+
 import { isValidC1Response } from "../utils/isValidC1Response";
+
+import { UIActions, UIState } from "./useUIState";
 
 const SESSION_STORAGE_KEY = "search-history";
 const MAX_HISTORY_LENGTH = 10;

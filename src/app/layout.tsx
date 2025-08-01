@@ -1,10 +1,11 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./context/ThemeContext";
-import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
+
 import { CenteredLoader } from "./components/Loader/CenteredLoader";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const inter = Inter({
   variable: "--font-inter",

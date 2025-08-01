@@ -1,14 +1,17 @@
-import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@crayonai/react-ui";
-import { SearchInput } from "../../components/SearchInput";
-import { C1Response } from "../../components/C1Response";
-import LegacySearch from "../LegacySearch/LegacySearch";
-import styles from "./MobileResultsView.module.scss";
-import { useSharedUIState } from "@/app/context/UIStateContext";
 import clsx from "clsx";
+import React, { useState } from "react";
+
+import { useSharedUIState } from "@/app/context/UIStateContext";
+
+import { C1Response } from "../../components/C1Response";
+import { SearchInput } from "../../components/SearchInput";
+import LegacySearch from "../LegacySearch/LegacySearch";
+
+import styles from "./MobileResultsView.module.scss";
 
 export const MobileResultsView = () => {
-  const { state, actions, handleSearch } = useSharedUIState();
+  const { state, handleSearch } = useSharedUIState();
   const [activeTab, setActiveTab] = useState("ai");
 
   const handleTabChange = (value: string) => {

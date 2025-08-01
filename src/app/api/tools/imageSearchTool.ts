@@ -2,7 +2,9 @@ import type { JSONSchema } from "openai/lib/jsonschema.mjs";
 import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.mjs";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
+
 import { googleImageSearch } from "../services/googleSearch";
+
 import { createToolErrorMessage } from "./toolErrorHandler";
 
 /**
@@ -38,7 +40,7 @@ export const imageTool = (
     function: async ({ altText }: { altText: string[] }) => {
       writeProgress({
         title: "Using Google Image Search Tool",
-        content: "Searching for: " + JSON.stringify(altText.join(", ")),
+        content: `Searching for: ${JSON.stringify(altText.join(", "))}`,
       });
       try {
         const results = await Promise.all(

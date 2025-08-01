@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
 import { C1Component } from "@thesysai/genui-sdk";
-import styles from "./C1Response.module.scss";
+import React from "react";
+
 import { searchImage } from "@/app/api/image_search/searchImage";
 import { useSharedUIState } from "@/app/context/UIStateContext";
+
+import styles from "./C1Response.module.scss";
 
 interface C1ResponseProps {
   className?: string;
@@ -21,7 +23,7 @@ export const C1Response = ({ className }: C1ResponseProps) => {
         isStreaming={state.isLoading}
         updateMessage={(message: string) => actions.setC1Response(message)}
         onAction={handleC1Action}
-        // @ts-ignore
+        // @ts-expect-error - searchImage is not typed
         searchImage={async (query) => {
           return await searchImage(query);
         }}

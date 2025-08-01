@@ -1,10 +1,13 @@
-import React from "react";
-import { SearchInput } from "../../components/SearchInput";
-import { C1Response } from "../../components/C1Response";
-import LegacySearch from "../LegacySearch/LegacySearch";
-import styles from "./DesktopResultsView.module.scss";
-import { useSharedUIState } from "@/app/context/UIStateContext";
 import clsx from "clsx";
+import React from "react";
+
+import { useSharedUIState } from "@/app/context/UIStateContext";
+
+import { C1Response } from "../../components/C1Response";
+import { SearchInput } from "../../components/SearchInput";
+import LegacySearch from "../LegacySearch/LegacySearch";
+
+import styles from "./DesktopResultsView.module.scss";
 
 export const DesktopResultsView = () => {
   const { state, handleSearch } = useSharedUIState();

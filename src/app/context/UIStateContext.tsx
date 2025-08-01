@@ -1,8 +1,9 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from "react";
-import { useUIState } from "../hooks/useUIState";
+
 import { useSearchHandler } from "../hooks/useSearchHandler";
+import { useUIState } from "../hooks/useUIState";
 
 interface UIStateContextType
   extends ReturnType<typeof useUIState>,

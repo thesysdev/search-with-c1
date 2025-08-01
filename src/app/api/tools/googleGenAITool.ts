@@ -1,8 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
+import type { JSONSchema } from "openai/lib/jsonschema.mjs";
 import type { RunnableToolFunctionWithParse } from "openai/lib/RunnableFunction.mjs";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import type { JSONSchema } from "openai/lib/jsonschema.mjs";
+
 import { createToolErrorMessage } from "./toolErrorHandler";
 
 const genAI = new GoogleGenAI({

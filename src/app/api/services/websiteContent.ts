@@ -1,8 +1,8 @@
 "use server";
 
 import { GenerateContentResponse, GoogleGenAI } from "@google/genai";
-import axios from "axios";
 import { Readability } from "@mozilla/readability";
+import axios from "axios";
 import { JSDOM } from "jsdom";
 
 // Types for website content extraction
@@ -95,7 +95,7 @@ export interface SummarizeWebsiteContentRequest {
 export async function summarizeWebsiteContent(
   params: SummarizeWebsiteContentRequest,
 ): Promise<string> {
-  const { content, query, timeout = 15000 } = params;
+  const { content, query } = params;
 
   if (!content) {
     return "No content available to summarize.";
@@ -104,8 +104,10 @@ export async function summarizeWebsiteContent(
   const maxContentLength = 500000;
   const truncatedContent =
     content.length > maxContentLength
-      ? content.substring(0, maxContentLength) +
-        "... [content truncated for performance]"
+      ? `${content.substring(
+          0,
+          maxContentLength,
+        )}... [content truncated for performance]`
       : content;
 
   try {

@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "lint:fix": "next lint --fix",
+    "lint:strict": "next lint --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check-all": "pnpm run type-check && pnpm run lint:strict && pnpm run format:check"
   },
   "dependencies": {
     "@crayonai/react-ui": "^0.8.17",
@@ -24,11 +29,11 @@
     "lucide-react": "^0.469.0",
     "next": "15.3.1",
     "openai": "^4.97.0",
+    "prettier": "^3.5.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "sass": "^1.89.0",
     "zod": "^3.24.4",
-    "prettier": "^3.5.3",
     "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
@@ -38,9 +43,14 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
     "typescript": "^5"

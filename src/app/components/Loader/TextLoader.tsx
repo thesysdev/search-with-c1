@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+
 import { Shimmer } from "../Shimmer/Shimmer";
 
 export const TextLoader = ({

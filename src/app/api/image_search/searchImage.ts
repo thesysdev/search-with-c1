@@ -15,7 +15,7 @@ export const searchImage = async (query: string) => {
       url: response.items[0]?.link ?? "",
       thumbnailUrl: response.items[0]?.image?.thumbnailLink ?? "",
     };
-  } catch (error) {
+  } catch {
     return {
       url: "https://via.placeholder.com/360x240",
       thumbnailUrl: "https://via.placeholder.com/360x240",

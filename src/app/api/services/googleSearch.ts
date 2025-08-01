@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import {
   GoogleWebSearchRequest,
   GoogleWebSearchResponse,
@@ -72,10 +73,10 @@ export async function googleImageSearch(
       q: query,
       searchType: "image",
       key: apiKey,
-      cx: cx,
-      num: num,
-      start: start,
-      safe: safe,
+      cx,
+      num,
+      start,
+      safe,
       imgSize,
       imgType,
       imgColorType,

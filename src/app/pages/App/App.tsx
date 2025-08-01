@@ -1,24 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { themePresets } from "@crayonai/react-ui/ThemeProvider";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSearchHistory } from "../../hooks/useSearchHistory";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+import { DesktopResultsView } from "@/app/sections/DesktopResultsView";
+import { MobileResultsView } from "@/app/sections/MobileResultsView";
+
 import { NavBar } from "../../components/NavBar/NavBar";
-import { LandingView } from "../../sections/LandingView";
 import {
   UIStateProvider,
   useSharedUIState,
 } from "../../context/UIStateContext";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { LandingView } from "../../sections/LandingView";
+
 import "@crayonai/react-ui/styles/index.css";
-import { DesktopResultsView } from "@/app/sections/DesktopResultsView";
-import { MobileResultsView } from "@/app/sections/MobileResultsView";
 
 // Dynamically import ThemeProvider to avoid SSR issues
 const ThemeProvider = dynamic(
-  () => import("@thesysai/genui-sdk").then((mod) => ({ default: mod.ThemeProvider })),
-  { ssr: false }
+  () =>
+    import("@thesysai/genui-sdk").then((mod) => ({
+      default: mod.ThemeProvider,
+    })),
+  { ssr: false },
 );
 
 const AppContent = () => {

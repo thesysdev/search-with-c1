@@ -8,7 +8,7 @@ export const useIsMobile = (breakpoint: number = 768) => {
 
   useEffect(() => {
     setMounted(true);
-    
+
     const checkMobile = () => {
       setIsMobile(window.innerWidth < breakpoint);
     };

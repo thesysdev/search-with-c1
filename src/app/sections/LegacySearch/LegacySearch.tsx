@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import SearchResults from "./SearchResults";
 import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
+
 import {
   GoogleCustomSearchResponseItem,
   googleCustomSearch,
 } from "@/app/api/web_search";
+
+import SearchResults from "./SearchResults";
 
 interface SearchPageProps {
   query: string;

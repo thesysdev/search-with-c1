@@ -1,10 +1,13 @@
-import React from "react";
-import Image from "next/image";
 import clsx from "clsx";
-import { SearchInput } from "../../components/SearchInput";
-import styles from "./LandingView.module.scss";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
+import Image from "next/image";
+import React from "react";
+
 import { useSharedUIState } from "@/app/context/UIStateContext";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+
+import { SearchInput } from "../../components/SearchInput";
+
+import styles from "./LandingView.module.scss";
 
 export const LandingView = () => {
   const isMobile = useIsMobile();
