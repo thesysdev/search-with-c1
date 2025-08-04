@@ -113,8 +113,8 @@ export const useSearchHandler = (
       humanFriendlyMessage: string;
     }) => {
       await performSearch(
-        humanFriendlyMessage,
         llmFriendlyMessage,
+        humanFriendlyMessage,
         state.c1Response,
       );
     },
@@ -123,6 +123,7 @@ export const useSearchHandler = (
 
   const refetchQueryResponse = useCallback(
     async (query: string) => {
+      actions.setC1Response("");
       removeQueryFromHistory(query);
       await performSearch(query, query);
     },

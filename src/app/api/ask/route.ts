@@ -1,17 +1,16 @@
 "use server";
 
-import { transformStream } from "@crayonai/stream";
 import { makeC1Response } from "@thesysai/genui-sdk/server";
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
-import { getTools } from "../tools";
-
+import { callGoogleGenAI } from "../utils/api";
+import { transformStream } from "@crayonai/stream";
 import { SYSTEM_PROMPT } from "./systemPrompt";
 
 const client = new OpenAI({
-  baseURL: "https://api.thesys.dev/v1/embed",
+  baseURL: "https://api.dev.thesys.dev/v1/visualize",
   apiKey: process.env.THESYS_API_KEY,
 });
 
@@ -34,85 +33,84 @@ export async function POST(req: NextRequest) {
       previousC1Response?: string;
     };
 
-    c1Response.writeThinkItem({
-      title: "Thinking...",
-      description: "Diving into the digital depths to craft you an answer",
-    });
-
-    const messages: ChatCompletionMessageParam[] = [];
-
-    if (previousC1Response) {
-      messages.push({
-        role: "assistant",
-        content: previousC1Response,
+    const generateResponse = async () => {
+      const geminiResponse = await callGoogleGenAI(prompt, (progress) => {
+        // Check if request is aborted before writing progress
+        if (req.signal.aborted) return;
+  
+        c1Response.writeThinkItem({
+          title: progress.title,
+          description: progress.content,
+        });
       });
+      
+      const messages: ChatCompletionMessageParam[] = [];
+  
+      if (previousC1Response) {
+        messages.push({
+          role: "assistant",
+          content: previousC1Response,
+        });
+      }
+  
+      messages.push({
+        role: "user",
+        content: prompt,
+      });
+  
+      const llmStream = await client.chat.completions.create({
+        model: "c1-nightly",
+        messages: [
+          {
+            role: "system",
+            content: SYSTEM_PROMPT,
+          },
+          ...messages,
+          {
+            role: "assistant",
+            content: `Here is the response from the web search: ${JSON.stringify(
+              geminiResponse,
+            )}`,
+          },
+        ],
+        stream: true,
+      });
+      
+      transformStream(
+        llmStream,
+        (chunk) => {
+          // Check if request is aborted before processing chunk
+          if (req.signal.aborted) return "";
+  
+          const contentDelta = chunk.choices[0]?.delta?.content || "";
+  
+          if (contentDelta) {
+            try {
+              c1Response.writeContent(contentDelta);
+            } catch (error) {
+              // Ignore write errors if stream is aborted
+              if (!req.signal.aborted) {
+                console.error("Error writing content:", error);
+              }
+            }
+          }
+          return contentDelta;
+        },
+        {
+          onEnd: () => {
+            try {
+              if (!req.signal.aborted) {
+                c1Response.end();
+              }
+            } catch (error) {
+              console.error("Stream already closed:", error);
+            }
+          },
+        },
+      );
     }
 
-    messages.push({
-      role: "user",
-      content: prompt,
-    });
-
-    const tools = getTools((progress) => {
-      // Check if request is aborted before writing progress
-      if (req.signal.aborted) return;
-
-      c1Response.writeThinkItem({
-        title: progress.title,
-        description: progress.content,
-      });
-    });
-
-    const runToolsResponse = client.beta.chat.completions.runTools({
-      model: "c1/anthropic/claude-3.5-sonnet/v-20250617",
-      messages: [
-        {
-          role: "system",
-          content: SYSTEM_PROMPT,
-        },
-        ...messages,
-      ],
-      stream: true,
-      tool_choice: "auto",
-      parallel_tool_calls: true,
-      tools,
-      signal: req.signal,
-    });
-
-    const llmStream = await runToolsResponse;
-
-    transformStream(
-      llmStream,
-      (chunk) => {
-        // Check if request is aborted before processing chunk
-        if (req.signal.aborted) return "";
-
-        const contentDelta = chunk.choices[0]?.delta?.content || "";
-
-        if (contentDelta) {
-          try {
-            c1Response.writeContent(contentDelta);
-          } catch (error) {
-            // Ignore write errors if stream is aborted
-            if (!req.signal.aborted) {
-              console.error("Error writing content:", error);
-            }
-          }
-        }
-        return contentDelta;
-      },
-      {
-        onEnd: () => {
-          try {
-            if (!req.signal.aborted) {
-              c1Response.end();
-            }
-          } catch (error) {
-            console.error("Stream already closed:", error);
-          }
-        },
-      },
-    );
+    generateResponse();
 
     return new Response(c1Response.responseStream, {
       headers: {
