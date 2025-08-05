@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
           return;
         }
 
-        const { searchResponse, assistantMessage } = await getSearchResponse(
+        const { assistantMessage } = await getSearchResponse(
           threadId as string,
           prompt,
           threadHistory,

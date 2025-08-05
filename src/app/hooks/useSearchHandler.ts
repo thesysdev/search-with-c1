@@ -1,9 +1,8 @@
 "use client";
 
-import { v4 as uuidv4 } from "uuid";
-
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { UIActions, UIState } from "./useUIState";
 

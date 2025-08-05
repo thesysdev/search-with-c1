@@ -2,8 +2,8 @@
 
 import { GoogleGenAI, Content } from "@google/genai";
 
-import { ThreadMessage } from "../cache/threadCache";
 import { GEMINI_SYSTEM_PROMPT } from "../ask/geminiSystemPrompt";
+import { ThreadMessage } from "../cache/threadCache";
 
 const genAI = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY as string,
