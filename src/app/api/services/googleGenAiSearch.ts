@@ -44,20 +44,22 @@ export const googleGenAISearch = async (
       parts: [{ text: query }],
     });
 
-    const streamingResponse = await genAI.models.generateContentStream({
-      model: "gemini-2.5-flash",
-      contents,
-      config: {
-        tools: [{ googleSearch: {} }],
-        thinkingConfig: {
-          includeThoughts: true,
+    const streamingResponse = await genAI.models
+      .generateContentStream({
+        model: "gemini-2.5-flash",
+        contents,
+        config: {
+          tools: [{ googleSearch: {} }],
+          thinkingConfig: {
+            includeThoughts: true,
+          },
+          systemInstruction: GEMINI_SYSTEM_PROMPT,
+          abortSignal: signal,
         },
-        systemInstruction: GEMINI_SYSTEM_PROMPT,
-        abortSignal: signal,
-      },
-    }).catch((error) => {
-      throw error;
-    });
+      })
+      .catch((error) => {
+        throw error;
+      });
 
     let text = "";
     for await (const chunk of streamingResponse) {

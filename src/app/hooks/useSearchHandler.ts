@@ -21,6 +21,7 @@ export const useSearchHandler = (
   const router = useRouter();
   const searchParams = useSearchParams();
   const isSearching = useRef(false);
+  const isSearchAborted = useRef(false);
 
   const currentQuery = useMemo(() => {
     const query = decodeURIComponent(searchParams.get(QUERY_PARAM_QUERY) || "");
@@ -84,17 +85,22 @@ export const useSearchHandler = (
   );
 
   useEffect(() => {
+    if (isSearchAborted.current) {
+      handleThreadAction(currentQuery);
+      isSearchAborted.current = false;
+    }
+  }, [state.isLoading]);
+
+  useEffect(() => {
     if (state.query === currentQuery) {
       return;
     }
 
     if (state.isLoading && isSearching.current) {
       actions.abortController?.abort();
+      isSearchAborted.current = true;
     }
-
-    handleThreadAction(currentQuery);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQuery, state.isLoading]);
+  }, [currentQuery]);
 
   return { currentQuery, handleSearch, handleThreadAction };
 };
