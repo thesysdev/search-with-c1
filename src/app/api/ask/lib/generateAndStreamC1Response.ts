@@ -11,7 +11,7 @@ import {
 import { SYSTEM_PROMPT } from "../systemPrompt";
 
 const client = new OpenAI({
-  baseURL: "https://api.dev.thesys.dev/v1/visualize",
+  baseURL: "https://api.thesys.dev/v1/visualize",
   apiKey: process.env.THESYS_API_KEY,
 });
 
