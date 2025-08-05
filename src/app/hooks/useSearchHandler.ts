@@ -1,10 +1,13 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-import { useSearchHistory } from "./useSearchHistory";
 import { UIActions, UIState } from "./useUIState";
+
+const QUERY_PARAM_THREAD_ID = "tid";
+const QUERY_PARAM_QUERY = "q";
 
 export const useSearchHandler = (
   state: UIState,
@@ -12,122 +15,81 @@ export const useSearchHandler = (
 ): {
   currentQuery: string;
   handleSearch: (query: string) => Promise<void>;
-  handleC1Action: ({
-    llmFriendlyMessage,
-    humanFriendlyMessage,
-  }: {
-    llmFriendlyMessage: string;
-    humanFriendlyMessage: string;
-  }) => Promise<void>;
-  refetchQueryResponse: (query: string) => Promise<void>;
+  handleThreadAction: (query: string) => Promise<void>;
 } => {
+  const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isSearching = useRef(false);
+  const isSearchAborted = useRef(false);
 
   const currentQuery = useMemo(() => {
-    const query = decodeURIComponent(searchParams.get("q") || "");
+    const query = decodeURIComponent(searchParams.get(QUERY_PARAM_QUERY) || "");
     if (query.length) actions.setInitialSearch(false);
     return query;
   }, [searchParams, actions]);
 
-  const {
-    addSearchToHistory,
-    loadQueryFromHistory,
-    updateSearchParams,
-    removeQueryFromHistory,
-  } = useSearchHistory(currentQuery, actions);
+  const threadIdParam = useMemo(() => {
+    return searchParams.get(QUERY_PARAM_THREAD_ID) || "";
+  }, [searchParams]);
+
+  const updateSearchParams = useCallback(
+    (query: string, threadId: string) => {
+      if (query === currentQuery && threadId === threadIdParam) return;
+
+      const params = new URLSearchParams();
+      params.set(QUERY_PARAM_QUERY, encodeURIComponent(query));
+      params.set(QUERY_PARAM_THREAD_ID, threadId);
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, currentQuery],
+  );
 
   const performSearch = useCallback(
-    async (
-      displayQuery: string,
-      apiQuery: string,
-      previousC1Response?: string,
-    ) => {
-      if (displayQuery.length === 0 || state.isLoading) {
+    async (query: string, generateThreadId: boolean) => {
+      if (query.length === 0 || state.isLoading) {
         return;
       }
+
+      const threadId = generateThreadId ? uuidv4() : threadIdParam || uuidv4();
 
       isSearching.current = true;
 
       actions.setInitialSearch(false);
+      actions.setQuery(query);
 
-      const existingSearch = loadQueryFromHistory(displayQuery);
-      if (existingSearch) {
-        isSearching.current = false;
+      updateSearchParams(query, threadId);
+
+      const response = await actions.makeApiCall(query, threadId);
+
+      if (response.aborted) {
         return;
       }
-
-      updateSearchParams(displayQuery);
-      actions.setQuery(displayQuery);
-
-      try {
-        const response = await actions.makeApiCall(
-          apiQuery,
-          previousC1Response,
-        );
-
-        if (response.aborted) {
-          console.log("Request was aborted, not updating history");
-          return;
-        }
-
-        if (response.c1Response) {
-          addSearchToHistory(displayQuery, {
-            c1Response: response.c1Response,
-            initialSearch: false,
-          });
-        } else if (response.error) {
-          console.error("API call failed:", response.error);
-          removeQueryFromHistory(displayQuery);
-        }
-      } catch (error) {
-        console.error("Unexpected error in makeApiCall:", error);
-        removeQueryFromHistory(displayQuery);
-      } finally {
-        isSearching.current = false;
-      }
+      isSearching.current = false;
     },
-    [
-      state.isLoading,
-      loadQueryFromHistory,
-      addSearchToHistory,
-      updateSearchParams,
-      actions,
-      removeQueryFromHistory,
-    ],
+    [state.isLoading, updateSearchParams, actions, threadIdParam],
   );
 
   const handleSearch = useCallback(
     async (query: string) => {
-      await performSearch(query, query);
+      await performSearch(query, true);
     },
     [performSearch],
   );
 
-  const handleC1Action = useCallback(
-    async ({
-      llmFriendlyMessage,
-      humanFriendlyMessage,
-    }: {
-      llmFriendlyMessage: string;
-      humanFriendlyMessage: string;
-    }) => {
-      await performSearch(
-        humanFriendlyMessage,
-        llmFriendlyMessage,
-        state.c1Response,
-      );
+  const handleThreadAction = useCallback(
+    async (query: string) => {
+      await performSearch(query, false);
     },
-    [performSearch, state.c1Response],
+    [performSearch],
   );
 
-  const refetchQueryResponse = useCallback(
-    async (query: string) => {
-      removeQueryFromHistory(query);
-      await performSearch(query, query);
-    },
-    [performSearch, removeQueryFromHistory],
-  );
+  useEffect(() => {
+    if (isSearchAborted.current) {
+      handleThreadAction(currentQuery);
+      isSearchAborted.current = false;
+    }
+  }, [state.isLoading]);
 
   useEffect(() => {
     if (state.query === currentQuery) {
@@ -136,13 +98,9 @@ export const useSearchHandler = (
 
     if (state.isLoading && isSearching.current) {
       actions.abortController?.abort();
-    }
-    const existingSearch = loadQueryFromHistory(currentQuery);
-
-    if (!existingSearch) {
-      handleSearch(currentQuery);
+      isSearchAborted.current = true;
     }
   }, [currentQuery]);
 
-  return { currentQuery, handleSearch, handleC1Action, refetchQueryResponse };
+  return { currentQuery, handleSearch, handleThreadAction };
 };

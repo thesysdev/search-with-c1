@@ -24,7 +24,7 @@ export const DesktopResultsView = () => {
       </div>
       <div className={styles.mainContainer}>
         <div
-          className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-3xl shadow-md overflow-hidden`}
+          className={`${styles.searchResultsContainer} flex flex-col w-[450px] mt-0 mb-4 rounded-3xl overflow-hidden`}
         >
           <LegacySearch query={state.query} />
         </div>
