@@ -3,7 +3,7 @@
  */
 
 // Base request interface for all Google Search requests
-export interface BaseGoogleSearchRequest {
+interface BaseGoogleSearchRequest {
   query: string;
   num?: number;
   cr?: string; // Country restriction
@@ -13,31 +13,8 @@ export interface BaseGoogleSearchRequest {
   dateRestrict?: string;
 }
 
-// Web search specific item
-export interface GoogleCustomSearchResponseItem {
-  title: string;
-  htmlTitle: string;
-  link: string;
-  displayLink: string;
-  snippet: string;
-  htmlSnippet: string;
-  cacheId?: string;
-  formattedUrl: string;
-  htmlFormattedUrl: string;
-  pagemap?: {
-    cse_thumbnail?: Array<{
-      src: string;
-      width: string;
-      height: string;
-    }>;
-    cse_image?: Array<{
-      src: string;
-    }>;
-  };
-}
-
 // Image search specific item
-export interface GoogleImageSearchResponseItem {
+interface GoogleImageSearchResponseItem {
   title: string;
   htmlTitle: string;
   link: string;
@@ -58,7 +35,7 @@ export interface GoogleImageSearchResponseItem {
 }
 
 // Base response structure for Google Search API
-export interface BaseGoogleSearchResponse<T> {
+interface BaseGoogleSearchResponse<T> {
   kind: string;
   url?: {
     type: string;
@@ -87,37 +64,31 @@ export interface BaseGoogleSearchResponse<T> {
 // Web search specific request
 export interface GoogleWebSearchRequest extends BaseGoogleSearchRequest {}
 
-// Image search specific request
-export interface GoogleImageSearchRequest extends BaseGoogleSearchRequest {
-  start?: number;
-  safe?: string;
-  imgSize?: string;
-  imgType?: string;
-  imgColorType?: string;
-  imgDominantColor?: string;
-}
-
 // Complete response types
 export type GoogleWebSearchResponse =
   BaseGoogleSearchResponse<GoogleCustomSearchResponseItem>;
 export type GoogleImageSearchResponse =
   BaseGoogleSearchResponse<GoogleImageSearchResponseItem>;
 
-// Transformed result types for web search
-export interface TransformedWebResult {
+// Web search specific item
+export interface GoogleCustomSearchResponseItem {
   title: string;
-  sourceURL: string;
+  htmlTitle: string;
+  link: string;
+  displayLink: string;
   snippet: string;
-  pageSummary: string;
-  sourceImage: {
-    fullImage?: string;
-    thumbnail?: string;
+  htmlSnippet: string;
+  cacheId?: string;
+  formattedUrl: string;
+  htmlFormattedUrl: string;
+  pagemap?: {
+    cse_thumbnail?: Array<{
+      src: string;
+      width: string;
+      height: string;
+    }>;
+    cse_image?: Array<{
+      src: string;
+    }>;
   };
-}
-
-// Transformed result types for image search
-export interface TransformedImageResult {
-  altText: string;
-  imageUrl: string | null;
-  thumbnailUrl: string | null;
 }

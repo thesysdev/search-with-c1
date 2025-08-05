@@ -2,14 +2,13 @@
 
 import { GoogleGenAI, Content } from "@google/genai";
 
-import { createToolErrorMessage } from "../tools/toolErrorHandler";
 import { ThreadMessage } from "../cache/threadCache";
 
 const genAI = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY as string,
 });
 
-export const callGoogleGenAI = async (
+export const googleGenAISearch = async (
   query: string,
   threadHistory: ThreadMessage[],
   writeProgress: (progress: { title: string; content: string }) => void,
@@ -67,7 +66,7 @@ export const callGoogleGenAI = async (
             const content = lines.slice(1).join("\n").trim();
 
             writeProgress({
-              title: title,
+              title,
               content: content || thoughtText,
             });
           }
@@ -85,16 +84,21 @@ export const callGoogleGenAI = async (
 
     return text;
   } catch (error) {
-    const lastUserMessage = threadHistory.findLast((m) => m.role === "user");
-    const query =
-      lastUserMessage && "prompt" in lastUserMessage
-        ? lastUserMessage.prompt
-        : "No query found";
+    console.error("Error in Google GenAI API call:", error);
 
-    const errorMessage = createToolErrorMessage(error, {
-      action: "performing a web search",
-      userFriendlyContext: `for the query: "${query}"`,
+    const errorTitle = "Search Error";
+    const errorDescription =
+      error instanceof Error
+        ? error.message
+        : "An unexpected error occurred while searching for information.";
+
+    writeProgress({
+      title: errorTitle,
+      content: errorDescription,
     });
-    return errorMessage;
+
+    throw new Error(
+      `I encountered an error while searching: ${errorDescription}. Please try again or rephrase your query.`,
+    );
   }
 };

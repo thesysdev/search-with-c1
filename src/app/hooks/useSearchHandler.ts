@@ -1,8 +1,9 @@
 "use client";
 
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "crypto";
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { UIActions, UIState } from "./useUIState";
 
@@ -11,7 +12,7 @@ const QUERY_PARAM_QUERY = "q";
 
 export const useSearchHandler = (
   state: UIState,
-  actions: UIActions
+  actions: UIActions,
 ): {
   currentQuery: string;
   handleSearch: (query: string) => Promise<void>;
@@ -37,7 +38,7 @@ export const useSearchHandler = (
       params.set(QUERY_PARAM_THREAD_ID, threadId);
       router.push(`${pathname}?${params.toString()}`);
     },
-    [pathname, router, currentQuery]
+    [pathname, router, currentQuery],
   );
 
   const performSearch = useCallback(
@@ -46,8 +47,10 @@ export const useSearchHandler = (
         return;
       }
 
-      const threadId = generateThreadId ? uuidv4() : searchParams.get(QUERY_PARAM_THREAD_ID) || uuidv4();
-      
+      const threadId = generateThreadId
+        ? randomUUID()
+        : searchParams.get(QUERY_PARAM_THREAD_ID) || randomUUID();
+
       isSearching.current = true;
 
       actions.setInitialSearch(false);
@@ -62,21 +65,21 @@ export const useSearchHandler = (
       }
       isSearching.current = false;
     },
-    [state.isLoading, updateSearchParams, actions]
+    [state.isLoading, updateSearchParams, actions, searchParams],
   );
 
   const handleSearch = useCallback(
     async (query: string) => {
       await performSearch(query, true);
     },
-    [performSearch]
+    [performSearch],
   );
 
   const handleC1Action = useCallback(
     async (query: string) => {
       await performSearch(query, false);
     },
-    [performSearch, state.c1Response]
+    [performSearch],
   );
 
   useEffect(() => {
@@ -89,6 +92,7 @@ export const useSearchHandler = (
     }
 
     performSearch(currentQuery, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuery, performSearch]);
 
   return { currentQuery, handleSearch, handleC1Action };

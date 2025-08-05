@@ -3,7 +3,7 @@
 import { C1Component } from "@thesysai/genui-sdk";
 import React from "react";
 
-import { searchImage } from "@/app/api/image_search/searchImage";
+import { searchImage } from "@/app/api/services/googleImageSearch";
 import { useSharedUIState } from "@/app/context/UIStateContext";
 
 import styles from "./C1Response.module.scss";
