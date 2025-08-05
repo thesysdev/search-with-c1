@@ -29,6 +29,11 @@ export const getSearchResponse = async (
 ) => {
   const cachedTurn = findCachedTurn(prompt, threadHistory);
   if (cachedTurn?.assistant.searchResponse) {
+    c1Response.writeThinkItem({
+      title: "Using Cached Results",
+      description:
+        "Found previous search results for this query, skipping web search",
+    });
     return {
       searchResponse: cachedTurn.assistant.searchResponse,
       assistantMessage: cachedTurn.assistant,
@@ -46,6 +51,7 @@ export const getSearchResponse = async (
           description: progress.content,
         });
       },
+      signal,
     );
 
     await addUserMessage(threadId, prompt);
@@ -54,6 +60,18 @@ export const getSearchResponse = async (
     });
     return { searchResponse, assistantMessage };
   } catch (error) {
+    // Handle abort signal separately - don't log as error since it's intentional
+    if (
+      signal.aborted ||
+      (error instanceof Error && error.message.includes("aborted"))
+    ) {
+      console.log("Search request was aborted");
+      throw new Error(
+        "Search request was cancelled because the request was aborted",
+      );
+    }
+
+    // Log actual API errors
     console.error("Error calling Google Gen AI:", error);
     throw new Error("Failed to get search response from Google Gen AI.");
   }

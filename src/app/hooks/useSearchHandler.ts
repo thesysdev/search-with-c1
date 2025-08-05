@@ -94,7 +94,7 @@ export const useSearchHandler = (
 
     handleThreadAction(currentQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQuery]);
+  }, [currentQuery, state.isLoading]);
 
   return { currentQuery, handleSearch, handleThreadAction };
 };

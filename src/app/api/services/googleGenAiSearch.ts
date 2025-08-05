@@ -13,6 +13,7 @@ export const googleGenAISearch = async (
   query: string,
   threadHistory: ThreadMessage[],
   writeProgress: (progress: { title: string; content: string }) => void,
+  signal?: AbortSignal,
 ) => {
   try {
     writeProgress({
@@ -52,7 +53,10 @@ export const googleGenAISearch = async (
           includeThoughts: true,
         },
         systemInstruction: GEMINI_SYSTEM_PROMPT,
+        abortSignal: signal,
       },
+    }).catch((error) => {
+      throw error;
     });
 
     let text = "";
@@ -80,8 +84,9 @@ export const googleGenAISearch = async (
     }
 
     writeProgress({
-      title: "Generating Final Answer",
-      content: "Compiling the information into a comprehensive response.",
+      title: "Web Search Complete",
+      content:
+        "Successfully retrieved comprehensive information from web search results.",
     });
 
     return text;
