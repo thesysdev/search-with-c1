@@ -12,7 +12,7 @@ let cacheManager: ICacheManager;
  */
 const initializeCacheManager = (): ICacheManager => {
   // If you have a Redis instance, the application will use it for caching.
-  if (process.env.UPSTASH_REDIS_REST_URL) {
+  if (process.env.REDIS_URL) {
     console.log("Using Redis cache manager.");
     return new RedisCacheManager();
   }

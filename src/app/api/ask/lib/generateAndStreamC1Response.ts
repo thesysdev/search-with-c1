@@ -28,18 +28,14 @@ const client = new OpenAI({
  */
 export const generateAndStreamC1Response = async ({
   threadId,
-  prompt,
   threadHistory,
-  searchResponse,
   assistantMessage,
   c1Response,
   signal,
   errorMessage,
 }: {
   threadId: string;
-  prompt: string;
   threadHistory: ThreadMessage[];
-  searchResponse: any;
   assistantMessage: AssistantMessage;
   c1Response: ReturnType<typeof makeC1Response>;
   signal: AbortSignal;
@@ -76,15 +72,11 @@ export const generateAndStreamC1Response = async ({
       },
       ...messages,
       {
-        role: "user",
-        content: prompt,
-      },
-      {
         role: "assistant",
         content: errorMessage
           ? `There was an error during the search: ${errorMessage}. Please respond to the user gracefully.`
           : `Here is the response from the web search: ${JSON.stringify(
-              searchResponse,
+              assistantMessage.searchResponse,
             )}`,
       },
     ],

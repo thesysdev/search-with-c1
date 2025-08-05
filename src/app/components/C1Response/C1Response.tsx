@@ -13,7 +13,7 @@ interface C1ResponseProps {
 }
 
 export const C1Response = ({ className }: C1ResponseProps) => {
-  const { state, actions, handleC1Action } = useSharedUIState();
+  const { state, actions, handleThreadAction } = useSharedUIState();
 
   return (
     <div className={`${styles.c1Container} mb-4 mt-0 ${className || ""}`}>
@@ -22,7 +22,7 @@ export const C1Response = ({ className }: C1ResponseProps) => {
         c1Response={state.c1Response}
         isStreaming={state.isLoading}
         updateMessage={(message: string) => actions.setC1Response(message)}
-        onAction={(action) => handleC1Action(action.humanFriendlyMessage)}
+        onAction={(action) => handleThreadAction(action.humanFriendlyMessage)}
         // @ts-expect-error - searchImage is not typed
         searchImage={async (query) => {
           return await searchImage(query);

@@ -1,6 +1,6 @@
 "use client";
 
-import { randomUUID } from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -16,7 +16,7 @@ export const useSearchHandler = (
 ): {
   currentQuery: string;
   handleSearch: (query: string) => Promise<void>;
-  handleC1Action: (query: string) => Promise<void>;
+  handleThreadAction: (query: string) => Promise<void>;
 } => {
   const pathname = usePathname();
   const router = useRouter();
@@ -29,9 +29,13 @@ export const useSearchHandler = (
     return query;
   }, [searchParams, actions]);
 
+  const threadIdParam = useMemo(() => {
+    return searchParams.get(QUERY_PARAM_THREAD_ID) || "";
+  }, [searchParams]);
+
   const updateSearchParams = useCallback(
     (query: string, threadId: string) => {
-      if (query === currentQuery) return;
+      if (query === currentQuery && threadId === threadIdParam) return;
 
       const params = new URLSearchParams();
       params.set(QUERY_PARAM_QUERY, encodeURIComponent(query));
@@ -47,16 +51,14 @@ export const useSearchHandler = (
         return;
       }
 
-      const threadId = generateThreadId
-        ? randomUUID()
-        : searchParams.get(QUERY_PARAM_THREAD_ID) || randomUUID();
+      const threadId = generateThreadId ? uuidv4() : threadIdParam || uuidv4();
 
       isSearching.current = true;
 
       actions.setInitialSearch(false);
+      actions.setQuery(query);
 
       updateSearchParams(query, threadId);
-      actions.setQuery(query);
 
       const response = await actions.makeApiCall(query, threadId);
 
@@ -65,7 +67,7 @@ export const useSearchHandler = (
       }
       isSearching.current = false;
     },
-    [state.isLoading, updateSearchParams, actions, searchParams],
+    [state.isLoading, updateSearchParams, actions, threadIdParam],
   );
 
   const handleSearch = useCallback(
@@ -75,7 +77,7 @@ export const useSearchHandler = (
     [performSearch],
   );
 
-  const handleC1Action = useCallback(
+  const handleThreadAction = useCallback(
     async (query: string) => {
       await performSearch(query, false);
     },
@@ -91,9 +93,9 @@ export const useSearchHandler = (
       actions.abortController?.abort();
     }
 
-    performSearch(currentQuery, false);
+    handleThreadAction(currentQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQuery, performSearch]);
+  }, [currentQuery]);
 
-  return { currentQuery, handleSearch, handleC1Action };
+  return { currentQuery, handleSearch, handleThreadAction };
 };

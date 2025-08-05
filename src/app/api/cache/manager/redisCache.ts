@@ -1,6 +1,5 @@
-import { randomUUID } from "crypto";
-
 import { Redis } from "@upstash/redis";
+import { v4 as uuidv4 } from "uuid";
 
 import { AssistantMessage, ThreadMessage, UserMessage } from "../types";
 
@@ -15,64 +14,67 @@ export class RedisCacheManager implements ICacheManager {
     this.redis = Redis.fromEnv();
   }
 
-  async getThread(threadId: string): Promise<ThreadMessage[] | null> {
+  getThread = async (threadId: string): Promise<ThreadMessage[] | null> => {
     try {
       return await this.redis.get<ThreadMessage[]>(threadId);
     } catch (error) {
       console.error("Error getting thread from cache:", error);
       return null;
     }
-  }
+  };
 
-  private async saveThread(
+  private saveThread = async (
     threadId: string,
     thread: ThreadMessage[],
-  ): Promise<void> {
+  ): Promise<void> => {
     try {
       await this.redis.set(threadId, thread, { ex: THREAD_TTL_SECONDS });
     } catch (error) {
       console.error("Error saving thread to cache:", error);
     }
-  }
+  };
 
-  async addUserMessage(threadId: string, prompt: string): Promise<UserMessage> {
+  addUserMessage = async (
+    threadId: string,
+    prompt: string,
+  ): Promise<UserMessage> => {
     const thread = (await this.getThread(threadId)) || [];
     const userMessage: UserMessage = {
       role: "user",
-      messageId: randomUUID(),
+      messageId: uuidv4(),
       prompt,
       timestamp: new Date().toISOString(),
     };
     const updatedThread = [...thread, userMessage];
     await this.saveThread(threadId, updatedThread);
     return userMessage;
-  }
+  };
 
-  async addAssistantMessage(
+  addAssistantMessage = async (
     threadId: string,
     initialData?: Partial<
       Omit<AssistantMessage, "role" | "messageId" | "timestamp">
     >,
-  ): Promise<AssistantMessage> {
+  ): Promise<AssistantMessage> => {
     const thread = (await this.getThread(threadId)) || [];
     const assistantMessage: AssistantMessage = {
       role: "assistant",
-      messageId: randomUUID(),
+      messageId: uuidv4(),
       timestamp: new Date().toISOString(),
       ...initialData,
     };
     const updatedThread = [...thread, assistantMessage];
     await this.saveThread(threadId, updatedThread);
     return assistantMessage;
-  }
+  };
 
-  async updateAssistantMessage(
+  updateAssistantMessage = async (
     threadId: string,
     messageId: string,
     updates: Partial<
       Omit<AssistantMessage, "role" | "messageId" | "timestamp">
     >,
-  ): Promise<void> {
+  ): Promise<void> => {
     const thread = await this.getThread(threadId);
     if (!thread) {
       return;
@@ -90,5 +92,5 @@ export class RedisCacheManager implements ICacheManager {
     thread[messageIndex] = updatedMessage;
 
     await this.saveThread(threadId, thread);
-  }
+  };
 }

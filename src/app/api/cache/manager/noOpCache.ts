@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 import { AssistantMessage, ThreadMessage, UserMessage } from "../types";
 
@@ -18,7 +18,7 @@ export class NoOpCacheManager implements ICacheManager {
   ): Promise<UserMessage> {
     return Promise.resolve({
       role: "user",
-      messageId: randomUUID(),
+      messageId: uuidv4(),
       prompt,
       timestamp: new Date().toISOString(),
     });
@@ -32,7 +32,7 @@ export class NoOpCacheManager implements ICacheManager {
   ): Promise<AssistantMessage> {
     return Promise.resolve({
       role: "assistant",
-      messageId: randomUUID(),
+      messageId: uuidv4(),
       timestamp: new Date().toISOString(),
       ...initialData,
     });

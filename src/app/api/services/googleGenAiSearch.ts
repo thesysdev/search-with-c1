@@ -3,6 +3,7 @@
 import { GoogleGenAI, Content } from "@google/genai";
 
 import { ThreadMessage } from "../cache/threadCache";
+import { GEMINI_SYSTEM_PROMPT } from "../ask/geminiSystemPrompt";
 
 const genAI = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY as string,
@@ -50,6 +51,7 @@ export const googleGenAISearch = async (
         thinkingConfig: {
           includeThoughts: true,
         },
+        systemInstruction: GEMINI_SYSTEM_PROMPT,
       },
     });
 

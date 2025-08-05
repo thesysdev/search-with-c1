@@ -62,11 +62,10 @@ export async function POST(req: NextRequest) {
 
         const updatedThreadHistory =
           (await getThread(threadId as string)) || [];
+
         await generateAndStreamC1Response({
           threadId: threadId as string,
-          prompt,
           threadHistory: updatedThreadHistory,
-          searchResponse,
           assistantMessage,
           c1Response,
           signal: req.signal,
@@ -79,9 +78,7 @@ export async function POST(req: NextRequest) {
         const threadHistory = (await getThread(threadId as string)) || [];
         await generateAndStreamC1Response({
           threadId: threadId as string,
-          prompt,
           threadHistory,
-          searchResponse: null,
           assistantMessage: null as any,
           c1Response,
           signal: req.signal,
