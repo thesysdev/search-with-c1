@@ -22,7 +22,7 @@ export const C1Response = ({ className }: C1ResponseProps) => {
         c1Response={state.c1Response}
         isStreaming={state.isLoading}
         updateMessage={(message: string) => actions.setC1Response(message)}
-        onAction={handleC1Action}
+        onAction={(action) => handleC1Action(action.humanFriendlyMessage)}
         // @ts-expect-error - searchImage is not typed
         searchImage={async (query) => {
           return await searchImage(query);

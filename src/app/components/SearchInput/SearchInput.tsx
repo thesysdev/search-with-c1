@@ -1,6 +1,6 @@
 import { IconButton } from "@crayonai/react-ui";
 import clsx from "clsx";
-import { RefreshCcwIcon, SearchIcon, StopCircleIcon } from "lucide-react";
+import { SearchIcon, StopCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 import { useSharedUIState } from "@/app/context/UIStateContext";
@@ -20,7 +20,7 @@ export const SearchInput = ({
   onSearch,
   className,
 }: SearchInputProps) => {
-  const { state, refetchQueryResponse, actions } = useSharedUIState();
+  const { state, actions } = useSharedUIState();
   const [searchText, setSearchText] = useState(value);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -62,7 +62,7 @@ export const SearchInput = ({
         onKeyDown={handleKeyDown}
         autoFocus
       />
-      {state.isLoading ? (
+      {state.isLoading && (
         <IconButton
           icon={<StopCircleIcon />}
           variant="tertiary"
@@ -71,15 +71,7 @@ export const SearchInput = ({
             actions.abortController?.abort();
           }}
         />
-      ) : state.c1Response ? (
-        <IconButton
-          icon={<RefreshCcwIcon />}
-          variant="tertiary"
-          className="ml-1"
-          size="extra-small"
-          onClick={() => refetchQueryResponse(searchText)}
-        />
-      ) : null}
+      )}
     </div>
   );
 };

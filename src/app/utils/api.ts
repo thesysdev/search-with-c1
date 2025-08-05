@@ -5,8 +5,6 @@
 export type ApiCallParams = {
   /** The search query to be sent to the API */
   searchQuery: string;
-  /** Optional previous response for context in follow-up queries */
-  previousC1Response?: string;
   /** Callback to update the response state */
   setC1Response: (response: string) => void;
   /** Callback to update the loading state */
@@ -15,6 +13,8 @@ export type ApiCallParams = {
   abortController: AbortController | null;
   /** Callback to update the abort controller state */
   setAbortController: (controller: AbortController | null) => void;
+  /** The ID of the thread to associate with the API call */
+  threadId?: string;
 };
 
 /**
@@ -24,6 +24,7 @@ export type ApiCallResponse = {
   c1Response?: string;
   aborted: boolean;
   error?: string;
+  threadId?: string;
 };
 
 /**
@@ -35,7 +36,7 @@ export type ApiCallResponse = {
  */
 export const makeApiCall = async ({
   searchQuery,
-  previousC1Response,
+  threadId,
   setC1Response,
   setIsLoading,
   abortController,
@@ -60,7 +61,7 @@ export const makeApiCall = async ({
       },
       body: JSON.stringify({
         prompt: searchQuery,
-        previousC1Response,
+        threadId,
       }),
       signal: newAbortController.signal,
     });
@@ -96,6 +97,7 @@ export const makeApiCall = async ({
     return {
       c1Response: streamResponse,
       aborted: false,
+      threadId: response.headers.get("X-Thread-Id") || undefined,
     };
   } catch (error) {
     // Handle abort errors gracefully

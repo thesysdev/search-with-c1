@@ -21,6 +21,8 @@
     "@mozilla/readability": "^0.6.0",
     "@thesysai/genui-sdk": "^0.6.27",
     "@types/axios": "^0.9.36",
+    "@types/uuid": "^10.0.0",
+    "@upstash/redis": "^1.35.3",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
@@ -33,6 +35,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "sass": "^1.89.0",
+    "uuid": "^11.1.0",
     "zod": "^3.24.4",
     "zod-to-json-schema": "^3.24.5"
   },

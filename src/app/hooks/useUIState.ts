@@ -22,7 +22,7 @@ export type UIActions = {
   setInitialSearch: (isInitialSearch: boolean) => void;
   makeApiCall: (
     searchQuery: string,
-    previousC1Response?: string,
+    threadId?: string,
   ) => Promise<ApiCallResponse>;
   abortController: AbortController | null;
   resetState: () => void;
@@ -46,12 +46,12 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    */
   const handleApiCall = async (
     searchQuery: string,
-    previousC1Response?: string,
+    threadId?: string,
   ): Promise<ApiCallResponse> => {
     setC1Response("");
     const result = await makeApiCall({
       searchQuery,
-      previousC1Response,
+      threadId,
       setC1Response,
       setIsLoading,
       abortController,
