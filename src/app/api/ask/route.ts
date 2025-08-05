@@ -25,6 +25,11 @@ export async function POST(req: NextRequest) {
   const c1Response = makeC1Response();
   let threadId: string | null = null;
 
+  c1Response.writeThinkItem({
+    title: "Initializing",
+    description: "Setting up your request and preparing the response pipeline",
+  });
+
   // Add error handling for the response stream
   const originalResponseStream = c1Response.responseStream;
   const responseStreamWithErrorHandling = new ReadableStream({
