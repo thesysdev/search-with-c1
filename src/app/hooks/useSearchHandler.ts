@@ -4,6 +4,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import {
+  validateAndDecideThread,
+  handleInitialThreadValidation,
+} from "../utils/threadValidation";
+
 import { UIActions, UIState } from "./useUIState";
 
 const QUERY_PARAM_THREAD_ID = "tid";
@@ -22,6 +27,7 @@ export const useSearchHandler = (
   const searchParams = useSearchParams();
   const isSearching = useRef(false);
   const isSearchAborted = useRef(false);
+  const hasValidatedInitialThread = useRef(false);
 
   const currentQuery = useMemo(() => {
     const query = decodeURIComponent(searchParams.get(QUERY_PARAM_QUERY) || "");
@@ -42,7 +48,7 @@ export const useSearchHandler = (
       params.set(QUERY_PARAM_THREAD_ID, threadId);
       router.push(`${pathname}?${params.toString()}`);
     },
-    [pathname, router, currentQuery],
+    [pathname, router, currentQuery, threadIdParam],
   );
 
   const performSearch = useCallback(
@@ -51,7 +57,25 @@ export const useSearchHandler = (
         return;
       }
 
-      const threadId = generateThreadId ? uuidv4() : threadIdParam || uuidv4();
+      let threadId: string;
+
+      if (generateThreadId) {
+        threadId = uuidv4();
+        console.log(`Creating new thread: ${threadId}`);
+      } else {
+        // Use the utility function to validate and decide on thread
+        const result = await validateAndDecideThread(threadIdParam);
+
+        if (result.shouldUseExisting) {
+          threadId = result.threadId;
+          console.log(`Using existing thread: ${threadId}`);
+        } else {
+          threadId = uuidv4();
+          console.log(
+            `Thread ${threadIdParam} ${result.reason}, generating new thread: ${threadId}`,
+          );
+        }
+      }
 
       isSearching.current = true;
 
@@ -65,10 +89,36 @@ export const useSearchHandler = (
       if (response.aborted) {
         return;
       }
+
+      // If the backend created a new thread or returned a different threadId,
+      // update the URL to reflect the actual thread being used
+      if (response.threadId && response.threadId !== threadId) {
+        console.log(
+          `Backend created new thread: ${response.threadId}, updating URL`,
+        );
+        updateSearchParams(query, response.threadId);
+      } else if (response.threadStatus === "new" && !generateThreadId) {
+        // Backend detected expired thread and started fresh, log this for debugging
+        console.log(
+          `Backend detected expired thread ${threadId}, started fresh`,
+        );
+      }
+
       isSearching.current = false;
     },
     [state.isLoading, updateSearchParams, actions, threadIdParam],
   );
+
+  // Validate thread on initial load using utility function
+  useEffect(() => {
+    handleInitialThreadValidation(
+      currentQuery,
+      threadIdParam,
+      hasValidatedInitialThread,
+      state.isLoading,
+      performSearch,
+    );
+  }, [currentQuery, threadIdParam, state.isLoading]);
 
   const handleSearch = useCallback(
     async (query: string) => {
@@ -99,6 +149,8 @@ export const useSearchHandler = (
     if (state.isLoading && isSearching.current) {
       actions.abortController?.abort();
       isSearchAborted.current = true;
+    } else if (!state.isLoading && !isSearching.current) {
+      handleThreadAction(currentQuery);
     }
   }, [currentQuery]);
 

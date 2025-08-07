@@ -25,6 +25,47 @@ export type ApiCallResponse = {
   aborted: boolean;
   error?: string;
   threadId?: string;
+  threadStatus?: "new" | "existing";
+};
+
+/**
+ * Response type for thread validation
+ */
+export type ThreadValidationResponse = {
+  exists: boolean;
+  threadId: string;
+  messageCount?: number;
+};
+
+/**
+ * Validates if a thread exists in the backend cache.
+ * @param threadId - The thread ID to validate
+ * @returns Promise<ThreadValidationResponse> - Object containing validation result
+ */
+export const validateThread = async (
+  threadId: string,
+): Promise<ThreadValidationResponse> => {
+  try {
+    const response = await fetch("/api/validate-thread", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ threadId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Thread validation failed: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error validating thread:", error);
+    return {
+      exists: false,
+      threadId,
+    };
+  }
 };
 
 /**
@@ -66,6 +107,13 @@ export const makeApiCall = async ({
       signal: newAbortController.signal,
     });
 
+    // Extract thread information from headers
+    const responseThreadId = response.headers.get("X-Thread-Id") || undefined;
+    const threadStatus = response.headers.get("X-Thread-Status") as
+      | "new"
+      | "existing"
+      | undefined;
+
     // Set up stream reading utilities
     const decoder = new TextDecoder();
     const stream = response.body?.getReader();
@@ -97,7 +145,8 @@ export const makeApiCall = async ({
     return {
       c1Response: streamResponse,
       aborted: false,
-      threadId: response.headers.get("X-Thread-Id") || undefined,
+      threadId: responseThreadId,
+      threadStatus,
     };
   } catch (error) {
     // Handle abort errors gracefully

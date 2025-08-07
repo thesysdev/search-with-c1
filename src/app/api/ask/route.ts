@@ -24,6 +24,7 @@ interface AskRequest {
 export async function POST(req: NextRequest) {
   const c1Response = makeC1Response();
   let threadId: string | null = null;
+  let isNewThread = false;
 
   c1Response.writeThinkItem({
     title: "Initializing",
@@ -77,6 +78,16 @@ export async function POST(req: NextRequest) {
   const generateResponse = async () => {
     try {
       const threadHistory = (await getThread(threadId as string)) || [];
+
+      // Check if we got an empty thread history for a provided threadId
+      // This indicates the thread might have expired
+      if (threadHistory.length === 0 && threadId) {
+        isNewThread = true;
+        console.log(
+          `Thread ${threadId} appears to be new or expired, starting fresh`,
+        );
+      }
+
       const cachedTurn = findCachedTurn(prompt, threadHistory);
 
       if (cachedTurn?.assistant.c1Response) {
@@ -142,12 +153,14 @@ export async function POST(req: NextRequest) {
 
   const responseHeaders = {
     "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache, no-transform",
+    "Cache-Control": "no-cache",
     Connection: "keep-alive",
-    "X-Thread-Id": threadId,
+    "X-Thread-Id": threadId || "",
+    "X-Thread-Status": isNewThread ? "new" : "existing",
   };
 
   return new Response(responseStreamWithErrorHandling, {
+    status: 200,
     headers: responseHeaders,
   });
 }

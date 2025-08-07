@@ -81,9 +81,7 @@ export const generateAndStreamC1Response = async ({
         role: "assistant",
         content: errorMessage
           ? `There was an error during the search: ${errorMessage}. Please respond to the user gracefully.`
-          : `Here is the response from the web search: ${JSON.stringify(
-              assistantMessage.searchResponse,
-            )}`,
+          : JSON.stringify(assistantMessage.searchResponse),
       },
     ],
     stream: true,

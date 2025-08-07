@@ -52,6 +52,7 @@ export const googleGenAISearch = async (
           tools: [{ googleSearch: {} }],
           thinkingConfig: {
             includeThoughts: true,
+            thinkingBudget: 8000,
           },
           systemInstruction: GEMINI_SYSTEM_PROMPT,
           abortSignal: signal,
