@@ -3,8 +3,8 @@
 import { C1Component } from "@thesysai/genui-sdk";
 import React from "react";
 
-import { searchImage } from "@/app/api/services/googleImageSearch";
 import { useSharedUIState } from "@/app/context/UIStateContext";
+import { imageSearch } from "@/app/utils/secureSearchApi";
 
 import styles from "./C1Response.module.scss";
 
@@ -25,7 +25,7 @@ export const C1Response = ({ className }: C1ResponseProps) => {
         onAction={(action) => handleThreadAction(action.humanFriendlyMessage)}
         // @ts-expect-error - searchImage is not typed
         searchImage={async (query) => {
-          return await searchImage(query);
+          return await imageSearch(query);
         }}
       />
     </div>

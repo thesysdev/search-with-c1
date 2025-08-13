@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
-import { googleWebSearch } from "@/app/api/services/googleWebSearch";
 import { GoogleCustomSearchResponseItem } from "@/app/api/types/search";
+import { webSearch } from "@/app/utils/secureSearchApi";
 
 import SearchResults from "./SearchResults";
 
@@ -24,7 +24,7 @@ export default function LegacySearch({ query }: SearchPageProps) {
     setSearchedQuery(query);
 
     try {
-      const response = await googleWebSearch({ query });
+      const response = await webSearch({ query });
 
       setResults(response.items ?? []);
     } catch (error) {
