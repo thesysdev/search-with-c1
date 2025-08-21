@@ -8,12 +8,12 @@
 
 Experience the vast possibilities of web search reimagined through [Thesys](https://www.thesys.dev/), where large language models and generative UI combine to create dynamic, context-aware search experiences. From automatically generated data visualizations and interactive components to rich multimedia results and adaptive layouts, this demo showcases how generative UI transforms traditional search into an intelligent, visual, and highly engaging interface that understands and responds to your unique search intent.
 
-[![Built with Thesys](https://thesys.dev/built-with-thesys-badge.svg)](https://thesys.dev)
-
 ## Demo
 
 ![Demo GIF](assets/search_demo.gif)
 
+
+[![Built with Thesys](https://thesys.dev/built-with-thesys-badge.svg)](https://thesys.dev)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-search--with--c1.vercel.app-blue?style=for-the-badge&logo=vercel&logo=link)](https://search-with-c1.vercel.app/)
 
 ## Overview
