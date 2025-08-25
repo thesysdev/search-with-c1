@@ -21,7 +21,7 @@ importers:
         version: 0.6.0
       "@thesysai/genui-sdk":
         specifier: ^0.6.27
-        version: 0.6.28(a356fb391c4b77919af2ac2eab7c0206)
+        version: 0.6.28(fbx5wizvb74lf5zjdj2qi4lele)
       "@types/axios":
         specifier: ^0.9.36
         version: 0.9.36
@@ -52,6 +52,12 @@ importers:
       openai:
         specifier: ^4.97.0
         version: 4.102.0(ws@8.18.2)(zod@3.25.20)
+      posthog-js:
+        specifier: ^1.260.2
+        version: 1.260.2
+      posthog-node:
+        specifier: ^5.7.0
+        version: 5.7.0
       prettier:
         specifier: ^3.5.3
         version: 3.6.2
@@ -868,6 +874,12 @@ packages:
         integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==,
       }
     engines: { node: ">= 10.0.0" }
+
+  "@posthog/core@1.0.0":
+    resolution:
+      {
+        integrity: sha512-gquQld+duT9DdzLIFoHZkUMW0DZOTSLCtSjuuC/zKFz65Qecbz9p37DHBJMkw0dCuB8Mgh2GtH8Ag3PznJrP3g==,
+      }
 
   "@radix-ui/number@1.1.1":
     resolution:
@@ -2807,6 +2819,12 @@ packages:
       }
     engines: { node: ">= 0.6" }
 
+  core-js@3.45.1:
+    resolution:
+      {
+        integrity: sha512-L4NPsJlCfZsPeXukyzHFlg/i7IIVwHSItR0wg0FLNqYClJ4MQYTYLbC7EkjKYRLZF2iof2MUgN0EGy7MdQFChg==,
+      }
+
   cors@2.8.5:
     resolution:
       {
@@ -3587,6 +3605,12 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  fflate@0.4.8:
+    resolution:
+      {
+        integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==,
+      }
 
   file-entry-cache@8.0.0:
     resolution:
@@ -5395,6 +5419,33 @@ packages:
       }
     engines: { node: ^10 || ^12 || >=14 }
 
+  posthog-js@1.260.2:
+    resolution:
+      {
+        integrity: sha512-2Q+QUz9j9+uG16wp0WcOEbezVsLZCobZyTX8NvWPMGKyPaf2lOsjbPjznsq5JiIt324B6NAqzpWYZTzvhn9k9Q==,
+      }
+    peerDependencies:
+      "@rrweb/types": 2.0.0-alpha.17
+      rrweb-snapshot: 2.0.0-alpha.17
+    peerDependenciesMeta:
+      "@rrweb/types":
+        optional: true
+      rrweb-snapshot:
+        optional: true
+
+  posthog-node@5.7.0:
+    resolution:
+      {
+        integrity: sha512-6J1AIZWtbr2lEbZOO2AzO/h1FPJjUZM4KWcdaL2UQw7FY8J7VNaH3NiaRockASFmglpID7zEY25gV/YwCtuXjg==,
+      }
+    engines: { node: ">=20" }
+
+  preact@10.27.1:
+    resolution:
+      {
+        integrity: sha512-V79raXEWch/rbqoNc7nT9E4ep7lu+mI3+sBmfRD4i1M73R3WLYcCtdI0ibxGVf4eQL8ZIz2nFacqEC+rmnOORQ==,
+      }
+
   prelude-ls@1.2.1:
     resolution:
       {
@@ -6462,6 +6513,12 @@ packages:
       }
     engines: { node: ">= 14" }
 
+  web-vitals@4.2.4:
+    resolution:
+      {
+        integrity: sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==,
+      }
+
   webidl-conversions@3.0.1:
     resolution:
       {
@@ -7073,6 +7130,8 @@ snapshots:
       "@parcel/watcher-win32-ia32": 2.5.1
       "@parcel/watcher-win32-x64": 2.5.1
     optional: true
+
+  "@posthog/core@1.0.0": {}
 
   "@radix-ui/number@1.1.1": {}
 
@@ -7785,7 +7844,7 @@ snapshots:
       postcss: 8.5.3
       tailwindcss: 4.1.7
 
-  "@thesysai/genui-sdk@0.6.28(a356fb391c4b77919af2ac2eab7c0206)":
+  "@thesysai/genui-sdk@0.6.28(fbx5wizvb74lf5zjdj2qi4lele)":
     dependencies:
       "@crayonai/react-core": 0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1))
       "@crayonai/react-ui": 0.8.17(@crayonai/react-core@0.7.5(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(eventsource-parser@3.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1)))(@crayonai/stream@0.6.4(zod-to-json-schema@3.24.5(zod@3.25.20))(zod@3.25.20))(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zustand@5.0.5(@types/react@19.1.5)(react@18.3.1))
@@ -8363,6 +8422,8 @@ snapshots:
 
   cookie@0.7.2: {}
 
+  core-js@3.45.1: {}
+
   cors@2.8.5:
     dependencies:
       object-assign: 4.1.1
@@ -8759,7 +8820,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.38.0(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.27.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.38.0(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -8781,7 +8842,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.27.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.38.0(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.27.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.38.0(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -9012,6 +9073,8 @@ snapshots:
   fdir@6.4.4(picomatch@4.0.2):
     optionalDependencies:
       picomatch: 4.0.2
+
+  fflate@0.4.8: {}
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -10323,6 +10386,19 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  posthog-js@1.260.2:
+    dependencies:
+      core-js: 3.45.1
+      fflate: 0.4.8
+      preact: 10.27.1
+      web-vitals: 4.2.4
+
+  posthog-node@5.7.0:
+    dependencies:
+      "@posthog/core": 1.0.0
+
+  preact@10.27.1: {}
+
   prelude-ls@1.2.1: {}
 
   prettier@3.6.2: {}
@@ -11141,6 +11217,8 @@ snapshots:
   web-namespaces@2.0.1: {}
 
   web-streams-polyfill@4.0.0-beta.3: {}
+
+  web-vitals@4.2.4: {}
 
   webidl-conversions@3.0.1: {}
 
