@@ -19,7 +19,7 @@ Experience the vast possibilities of web search reimagined through [Thesys](http
 
 This project reimagines what web search could be if combined with Thesys GenUI:
 
-1. **Real-time web search** - Uses Google Search API to find the most relevant and up-to-date information regarding the searched query
+1. **Multi-provider web search** - Support for multiple search providers including Google Search API (via Gemini) and Exa's neural search for high-quality, structured results
 2. **Advanced LLM processing** - After finding relevant links, extracts key content from each webpage and uses Gemini SDK to generate concise, contextual summaries of the information
 3. **Generative UI components** - Dynamic components created on-the-fly based on search context using C1
 4. **Interactive results** - A responsive interface that adapts to different types of queries
@@ -31,7 +31,7 @@ Unlike traditional search engines that show a list of links or AI platforms that
 - **Frontend**: Next.js 15 with App Router
 - **UI**: Tailwind CSS, SASS, and Thesys GenUI SDK
 - **AI Integration**: Thesys C1 SDK, Google Gemini
-- **APIs**: Google Custom Search, Google Image Search
+- **APIs**: Google Custom Search, Google Image Search, Exa Search
 - **Streaming**: Real-time response streaming using Server-Sent Events
 
 ## Getting Started
@@ -70,6 +70,7 @@ Unlike traditional search engines that show a list of links or AI platforms that
    GOOGLE_API_KEY=[your_google_api_key]
    GOOGLE_CX=[your_google_custom_search_id]
    GEMINI_API_KEY=[your_gemini_api_key]
+   EXA_API_KEY=[your_exa_api_key]
    ```
 
    Generate an API Key by logging into https://chat.thesys.dev/console/keys
@@ -77,6 +78,8 @@ Unlike traditional search engines that show a list of links or AI platforms that
    Google Keys for image & web search. Read more about generating these keys here: https://developers.google.com/custom-search/v1/introduction
 
    Gemini for GEN-AI search. Generate a key at https://aistudio.google.com/apikey
+
+   Exa for neural web search. Generate a key at https://exa.ai/
 
 ### Development
 
@@ -88,11 +91,28 @@ pnpm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Search Providers
+
+This application supports multiple search providers to give you the best results:
+
+### Gemini Search (Default)
+- Uses Google's Gemini AI with built-in Google Search capabilities
+- Provides comprehensive search results with AI-powered summaries
+- Excellent for general queries and real-time information
+
+### Exa Search
+- Neural search engine optimized for high-quality, structured content
+- Provides full-text content extraction from web pages
+- Better for research, technical content, and detailed information retrieval
+- Includes metadata like publish dates and author information
+
+The application intelligently chooses the appropriate search provider or can be configured to use a specific provider based on your needs.
+
 ## How It Works
 
 1. User enters a search query
 2. The application sends the query to the Thesys C1 API
-3. C1 utilizes tools to search the web and retrieve images in real-time
+3. C1 utilizes configurable search providers (Gemini with Google Search or Exa neural search) to find relevant web content and retrieve images in real-time
 4. The search results are processed and enhanced with summaries
 5. C1 generates a dynamic UI with the appropriate components based on the content
 6. The response is streamed back to the client for a smooth user experience
