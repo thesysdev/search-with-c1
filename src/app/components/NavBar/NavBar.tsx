@@ -7,15 +7,17 @@ import Link from "next/link";
 
 import { useSharedUIState } from "@/app/context/UIStateContext";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { SearchProvider } from "@/app/api/types/searchProvider";
+import { Select } from "../Select";
 
 export const NavBar = () => {
   const isMobile = useIsMobile();
-  const { actions } = useSharedUIState();
+  const { state, actions } = useSharedUIState();
 
   return (
     <div className="fixed top-0 left-0 w-full z-10 bg-container">
       <div className="flex items-center justify-between px-6 pt-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-m">
           <Link
             onClick={() => actions.resetState()}
             href="/"
@@ -41,7 +43,7 @@ export const NavBar = () => {
             onClick={() =>
               window.open(
                 "https://github.com/thesysdev/search-with-c1",
-                "_blank",
+                "_blank"
               )
             }
           >

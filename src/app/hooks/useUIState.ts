@@ -1,6 +1,7 @@
 import { useState, Dispatch, SetStateAction, useRef } from "react";
 
 import { makeApiCall, ApiCallResponse } from "../utils/api";
+import { SearchProvider } from "../api/types/searchProvider";
 /**
  * Type definition for the UI state.
  * Contains all the state variables needed for the application's UI.
@@ -14,15 +15,18 @@ export type UIState = {
   isLoading: boolean;
   /** Whether it is the initial search */
   initialSearch: boolean;
+  /** The currently selected search provider */
+  searchProvider: SearchProvider;
 };
 
 export type UIActions = {
   setQuery: Dispatch<SetStateAction<string>>;
   setC1Response: Dispatch<SetStateAction<string>>;
+  setSearchProvider: Dispatch<SetStateAction<SearchProvider>>;
   setInitialSearch: (isInitialSearch: boolean) => void;
   makeApiCall: (
     searchQuery: string,
-    threadId?: string,
+    threadId?: string
   ) => Promise<ApiCallResponse>;
   abortController: AbortController | null;
   resetState: () => void;
@@ -39,6 +43,10 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
     useState<AbortController | null>(null);
   // State for tracking if it is the initial search
   const initialSearch = useRef(true);
+  // State for the selected search provider
+  const [searchProvider, setSearchProvider] = useState<SearchProvider>(
+    SearchProvider.EXA
+  );
 
   /**
    * Wrapper function around makeApiCall that provides necessary state handlers.
@@ -46,12 +54,13 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    */
   const handleApiCall = async (
     searchQuery: string,
-    threadId?: string,
+    threadId?: string
   ): Promise<ApiCallResponse> => {
     setC1Response("");
     const result = await makeApiCall({
       searchQuery,
       threadId,
+      searchProvider,
       setC1Response,
       setIsLoading,
       abortController,
@@ -67,6 +76,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
     setIsLoading(false);
     initialSearch.current = true;
     setAbortController(null);
+    setSearchProvider(SearchProvider.EXA);
   };
 
   return {
@@ -75,10 +85,12 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
       c1Response,
       isLoading,
       initialSearch: initialSearch.current,
+      searchProvider,
     },
     actions: {
       setQuery,
       setC1Response,
+      setSearchProvider,
       makeApiCall: handleApiCall,
       abortController,
       resetState,

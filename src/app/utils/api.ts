@@ -1,3 +1,5 @@
+import { SearchProvider } from "../api/types/searchProvider";
+
 /**
  * Type definition for parameters required by the makeApiCall function.
  * This includes both the API request parameters and state management callbacks.
@@ -5,6 +7,8 @@
 export type ApiCallParams = {
   /** The search query to be sent to the API */
   searchQuery: string;
+  /** The search provider to use */
+  searchProvider: SearchProvider;
   /** Callback to update the response state */
   setC1Response: (response: string) => void;
   /** Callback to update the loading state */
@@ -43,7 +47,7 @@ export type ThreadValidationResponse = {
  * @returns Promise<ThreadValidationResponse> - Object containing validation result
  */
 export const validateThread = async (
-  threadId: string,
+  threadId: string
 ): Promise<ThreadValidationResponse> => {
   try {
     const response = await fetch("/api/validate-thread", {
@@ -78,6 +82,7 @@ export const validateThread = async (
 export const makeApiCall = async ({
   searchQuery,
   threadId,
+  searchProvider,
   setC1Response,
   setIsLoading,
   abortController,
@@ -103,6 +108,7 @@ export const makeApiCall = async ({
       body: JSON.stringify({
         prompt: searchQuery,
         threadId,
+        searchProvider,
       }),
       signal: newAbortController.signal,
     });

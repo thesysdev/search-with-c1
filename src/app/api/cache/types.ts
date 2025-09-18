@@ -1,3 +1,5 @@
+import { UnifiedSearchResponse } from "../types/unifiedSearchResponse";
+
 export interface UserMessage {
   role: "user";
   messageId: string;
@@ -8,7 +10,7 @@ export interface UserMessage {
 export interface AssistantMessage {
   role: "assistant";
   messageId: string;
-  searchResponse?: any;
+  searchResponse?: UnifiedSearchResponse;
   c1Response?: string;
   timestamp: string;
 }

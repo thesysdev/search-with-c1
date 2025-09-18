@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { useSharedUIState } from "@/app/context/UIStateContext";
 
 import styles from "./SearchInput.module.scss";
+import { Select } from "../Select";
+import { SearchProvider } from "@/app/api/types/searchProvider";
 
 interface SearchInputProps {
   value: string;
@@ -43,12 +45,12 @@ export const SearchInput = ({
   return (
     <div
       className={clsx(
-        "flex items-center",
+        "flex items-center gap-xs",
         styles.searchContainer,
         {
           [styles.searchGlow]: isSearching,
         },
-        className,
+        className
       )}
     >
       <SearchIcon className={"mr-2 text-secondary"} size={18} />
@@ -62,6 +64,20 @@ export const SearchInput = ({
         onKeyDown={handleKeyDown}
         autoFocus
       />
+      {!state.isLoading && (
+        <Select
+          label="Search Providers"
+          options={[
+            { label: "Gemini", value: SearchProvider.GEMINI },
+            { label: "Exa", value: SearchProvider.EXA },
+          ]}
+          placeholder="Select search provider"
+          value={state.searchProvider}
+          onChange={(value) => {
+            actions.setSearchProvider(value as SearchProvider);
+          }}
+        />
+      )}
       {state.isLoading && (
         <IconButton
           icon={<StopCircleIcon />}

@@ -23,7 +23,7 @@ const ThemeProvider = dynamic(
     import("@thesysai/genui-sdk").then((mod) => ({
       default: mod.ThemeProvider,
     })),
-  { ssr: false },
+  { ssr: false }
 );
 
 const AppContent = () => {

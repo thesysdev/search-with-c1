@@ -8,10 +8,13 @@ import { getThread } from "../cache/threadCache";
 import { findCachedTurn } from "./lib/findCachedTurn";
 import { generateAndStreamC1Response } from "./lib/generateAndStreamC1Response";
 import { getSearchResponse } from "./lib/getSearchResponse";
+import { SearchProvider, SearchProviderConfig } from "../types/searchProvider";
 
 interface AskRequest {
   prompt: string;
   threadId: string;
+  searchProvider?: SearchProvider;
+  numResults?: number;
 }
 
 /**
@@ -72,8 +75,19 @@ export async function POST(req: NextRequest) {
     return new Response("Request aborted", { status: 499 });
   }
 
-  const { prompt, threadId: reqThreadId } = (await req.json()) as AskRequest;
+  const {
+    prompt,
+    threadId: reqThreadId,
+    searchProvider = SearchProvider.EXA,
+    numResults = 10,
+  } = (await req.json()) as AskRequest;
   threadId = reqThreadId;
+
+  // Create search provider configuration
+  const searchConfig: SearchProviderConfig = {
+    provider: searchProvider,
+    numResults,
+  };
 
   const generateResponse = async () => {
     try {
@@ -84,7 +98,7 @@ export async function POST(req: NextRequest) {
       if (threadHistory.length === 0 && threadId) {
         isNewThread = true;
         console.log(
-          `Thread ${threadId} appears to be new or expired, starting fresh`,
+          `Thread ${threadId} appears to be new or expired, starting fresh`
         );
       }
 
@@ -113,11 +127,12 @@ export async function POST(req: NextRequest) {
         threadHistory,
         c1Response,
         req.signal,
+        searchConfig
       );
 
       if (!assistantMessage) {
         console.error(
-          "No assistant message created. Aborting response generation.",
+          "No assistant message created. Aborting response generation."
         );
         c1Response.end();
         return;

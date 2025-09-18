@@ -9,11 +9,53 @@ import {
   ThreadMessage,
 } from "../../cache/threadCache";
 import { SYSTEM_PROMPT } from "../systemPrompt";
+import {
+  UnifiedSearchResponse,
+  isGeminiResponse,
+  isExaResponse,
+} from "../../types/unifiedSearchResponse";
+import { SearchProvider } from "../../types/searchProvider";
 
 const client = new OpenAI({
-  baseURL: "https://api.thesys.dev/v1/visualize",
+  baseURL: "http://localhost:3102/v1/visualize",
   apiKey: process.env.THESYS_API_KEY,
 });
+
+/**
+ * Formats a search response for the LLM based on the provider type
+ */
+const formatSearchResponseForLLM = (
+  searchResponse?: UnifiedSearchResponse
+): string => {
+  if (!searchResponse) {
+    return "No search results available.";
+  }
+
+  if (isGeminiResponse(searchResponse)) {
+    return searchResponse.content;
+  }
+
+  if (isExaResponse(searchResponse)) {
+    return `Search Query: ${searchResponse.searchQuery}
+
+Search Results from Exa:
+${searchResponse.results
+  .map(
+    (result, index) => `
+${index + 1}. ${result.title}
+   URL: ${result.url}
+   Published: ${result.publishedDate || "Unknown"}
+   Author: ${result.author || "Unknown"}
+   Content: ${result.content || result.snippet || "No content available"}
+`
+  )
+  .join("\n")}
+
+Please provide a comprehensive response based on these search results.`;
+  }
+
+  return JSON.stringify(searchResponse);
+};
 
 /**
  * Generates the C1 response and streams it back to the client.
@@ -49,7 +91,7 @@ export const generateAndStreamC1Response = async ({
 
   const messages: ChatCompletionMessageParam[] = threadHistory
     .filter(
-      (msg) => assistantMessage && msg.messageId !== assistantMessage.messageId,
+      (msg) => assistantMessage && msg.messageId !== assistantMessage.messageId
     )
     .map((msg) => {
       if (msg.role === "user") {
@@ -61,7 +103,7 @@ export const generateAndStreamC1Response = async ({
       const content = msg.c1Response
         ? msg.c1Response
         : `Here is the response from the web search: ${JSON.stringify(
-            msg.searchResponse,
+            msg.searchResponse
           )}`;
       return {
         role: "assistant",
@@ -81,7 +123,7 @@ export const generateAndStreamC1Response = async ({
         role: "assistant",
         content: errorMessage
           ? `There was an error during the search: ${errorMessage}. Please respond to the user gracefully.`
-          : JSON.stringify(assistantMessage.searchResponse),
+          : formatSearchResponseForLLM(assistantMessage.searchResponse),
       },
     ],
     stream: true,
@@ -117,10 +159,10 @@ export const generateAndStreamC1Response = async ({
         } catch (error) {
           console.error(
             "Stream already closed or error updating cache:",
-            error,
+            error
           );
         }
       },
-    },
+    }
   );
 };
