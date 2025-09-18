@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 import {
   Select as CrayonSelect,
   SelectContent,
@@ -7,10 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@crayonai/react-ui";
+import Image from "next/image";
 
 interface SelectOption {
   label: string;
   value: string;
+  icon?: React.ReactNode;
 }
 
 interface SelectProps {
@@ -32,6 +35,8 @@ export const Select = ({
   defaultValue,
   label,
 }: SelectProps) => {
+  const isMobile = useIsMobile();
+
   return (
     <CrayonSelect
       value={value}
@@ -46,8 +51,15 @@ export const Select = ({
         <SelectGroup>
           <SelectLabel className="text-xs">{label}</SelectLabel>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="flex items-center gap-xs flex-nowrap"
+            >
+              <span className="flex items-center gap-xs">
+                {!isMobile && option.icon && option.icon}
+                {option.label}
+              </span>
             </SelectItem>
           ))}
         </SelectGroup>

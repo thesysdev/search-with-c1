@@ -2,11 +2,10 @@ import { IconButton } from "@crayonai/react-ui";
 import clsx from "clsx";
 import { SearchIcon, StopCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
 import { useSharedUIState } from "@/app/context/UIStateContext";
-
 import styles from "./SearchInput.module.scss";
 import { Select } from "../Select";
+import Image from "next/image";
 import { SearchProvider } from "@/app/api/types/searchProvider";
 
 interface SearchInputProps {
@@ -68,8 +67,18 @@ export const SearchInput = ({
         <Select
           label="Search Providers"
           options={[
-            { label: "Gemini", value: SearchProvider.GEMINI },
-            { label: "Exa", value: SearchProvider.EXA },
+            {
+              label: "Gemini",
+              value: SearchProvider.GEMINI,
+              icon: (
+                <Image src="/gemini.svg" width={10} height={10} alt="Gemini" />
+              ),
+            },
+            {
+              label: "Exa",
+              value: SearchProvider.EXA,
+              icon: <Image src="/exa.svg" width={10} height={10} alt="Exa" />,
+            },
           ]}
           placeholder="Select search provider"
           value={state.searchProvider}
