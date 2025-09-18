@@ -9,5 +9,5 @@ if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
     mask_all_text: true,
     defaults: "2025-05-24",
     debug: process.env.NODE_ENV === "development",
-  })
+  });
 }

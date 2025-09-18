@@ -25,7 +25,7 @@ const client = new OpenAI({
  * Formats a search response for the LLM based on the provider type
  */
 const formatSearchResponseForLLM = (
-  searchResponse?: UnifiedSearchResponse
+  searchResponse?: UnifiedSearchResponse,
 ): string => {
   if (!searchResponse) {
     return "No search results available.";
@@ -47,7 +47,7 @@ ${index + 1}. ${result.title}
    Published: ${result.publishedDate || "Unknown"}
    Author: ${result.author || "Unknown"}
    Content: ${result.content || result.snippet || "No content available"}
-`
+`,
   )
   .join("\n")}
 
@@ -91,7 +91,7 @@ export const generateAndStreamC1Response = async ({
 
   const messages: ChatCompletionMessageParam[] = threadHistory
     .filter(
-      (msg) => assistantMessage && msg.messageId !== assistantMessage.messageId
+      (msg) => assistantMessage && msg.messageId !== assistantMessage.messageId,
     )
     .map((msg) => {
       if (msg.role === "user") {
@@ -103,7 +103,7 @@ export const generateAndStreamC1Response = async ({
       const content = msg.c1Response
         ? msg.c1Response
         : `Here is the response from the web search: ${JSON.stringify(
-            msg.searchResponse
+            msg.searchResponse,
           )}`;
       return {
         role: "assistant",
@@ -159,10 +159,10 @@ export const generateAndStreamC1Response = async ({
         } catch (error) {
           console.error(
             "Stream already closed or error updating cache:",
-            error
+            error,
           );
         }
       },
-    }
+    },
   );
 };

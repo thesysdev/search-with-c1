@@ -26,7 +26,7 @@ export type UIActions = {
   setInitialSearch: (isInitialSearch: boolean) => void;
   makeApiCall: (
     searchQuery: string,
-    threadId?: string
+    threadId?: string,
   ) => Promise<ApiCallResponse>;
   abortController: AbortController | null;
   resetState: () => void;
@@ -45,7 +45,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
   const initialSearch = useRef(true);
   // State for the selected search provider
   const [searchProvider, setSearchProvider] = useState<SearchProvider>(
-    SearchProvider.EXA
+    SearchProvider.EXA,
   );
 
   /**
@@ -54,7 +54,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
    */
   const handleApiCall = async (
     searchQuery: string,
-    threadId?: string
+    threadId?: string,
   ): Promise<ApiCallResponse> => {
     setC1Response("");
     const result = await makeApiCall({

@@ -39,7 +39,7 @@ export const exaSearch = async (
   query: string,
   writeProgress: ProgressCallback,
   signal?: AbortSignal,
-  numResults: number = 10
+  numResults: number = 10,
 ): Promise<ExaSearchResponse> => {
   try {
     writeProgress({
@@ -123,7 +123,7 @@ export const exaSearch = async (
     });
 
     throw new Error(
-      `Exa search failed: ${errorDescription}. Please try again or use a different search provider.`
+      `Exa search failed: ${errorDescription}. Please try again or use a different search provider.`,
     );
   }
 };

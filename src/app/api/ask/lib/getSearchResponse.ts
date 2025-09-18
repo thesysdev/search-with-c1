@@ -33,7 +33,7 @@ export const getSearchResponse = async (
   threadHistory: ThreadMessage[],
   c1Response: ReturnType<typeof makeC1Response>,
   signal: AbortSignal,
-  config: SearchProviderConfig = { provider: SearchProvider.GEMINI }
+  config: SearchProviderConfig = { provider: SearchProvider.GEMINI },
 ) => {
   const cachedTurn = findCachedTurn(prompt, threadHistory);
   if (cachedTurn?.assistant.searchResponse) {
@@ -68,7 +68,7 @@ export const getSearchResponse = async (
           });
         },
         signal,
-        config.numResults || 10
+        config.numResults || 10,
       );
 
       searchResponse = {
@@ -97,7 +97,7 @@ export const getSearchResponse = async (
             description: progress.content,
           });
         },
-        signal
+        signal,
       );
 
       searchResponse = {
@@ -120,7 +120,7 @@ export const getSearchResponse = async (
     ) {
       console.log("Search request was aborted");
       throw new Error(
-        "Search request was cancelled because the request was aborted"
+        "Search request was cancelled because the request was aborted",
       );
     }
 

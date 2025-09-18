@@ -3,10 +3,10 @@ import clsx from "clsx";
 import { SearchIcon, StopCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSharedUIState } from "@/app/context/UIStateContext";
-import styles from "./SearchInput.module.scss";
 import { Select } from "../Select";
 import Image from "next/image";
 import { SearchProvider } from "@/app/api/types/searchProvider";
+import styles from "./SearchInput.module.scss";
 
 interface SearchInputProps {
   value: string;
@@ -49,7 +49,7 @@ export const SearchInput = ({
         {
           [styles.searchGlow]: isSearching,
         },
-        className
+        className,
       )}
     >
       <SearchIcon className={"mr-2 text-secondary"} size={18} />

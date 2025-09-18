@@ -49,7 +49,7 @@ export type ThreadValidationResponse = {
  * @returns Promise<ThreadValidationResponse> - Object containing validation result
  */
 export const validateThread = async (
-  threadId: string
+  threadId: string,
 ): Promise<ThreadValidationResponse> => {
   try {
     const response = await fetch("/api/validate-thread", {

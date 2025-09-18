@@ -43,7 +43,7 @@ export const NavBar = () => {
             onClick={() =>
               window.open(
                 "https://github.com/thesysdev/search-with-c1",
-                "_blank"
+                "_blank",
               )
             }
           >

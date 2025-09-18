@@ -26,7 +26,7 @@ export interface UnifiedSearchResponse {
  * Type guard to check if response is from Gemini
  */
 export const isGeminiResponse = (
-  response: UnifiedSearchResponse
+  response: UnifiedSearchResponse,
 ): response is UnifiedSearchResponse & { content: string } => {
   return response.provider === SearchProvider.GEMINI && !!response.content;
 };
@@ -35,7 +35,7 @@ export const isGeminiResponse = (
  * Type guard to check if response is from Exa
  */
 export const isExaResponse = (
-  response: UnifiedSearchResponse
+  response: UnifiedSearchResponse,
 ): response is UnifiedSearchResponse & {
   results: NonNullable<UnifiedSearchResponse["results"]>;
 } => {

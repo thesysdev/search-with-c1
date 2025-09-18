@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
       if (threadHistory.length === 0 && threadId) {
         isNewThread = true;
         console.log(
-          `Thread ${threadId} appears to be new or expired, starting fresh`
+          `Thread ${threadId} appears to be new or expired, starting fresh`,
         );
       }
 
@@ -127,12 +127,12 @@ export async function POST(req: NextRequest) {
         threadHistory,
         c1Response,
         req.signal,
-        searchConfig
+        searchConfig,
       );
 
       if (!assistantMessage) {
         console.error(
-          "No assistant message created. Aborting response generation."
+          "No assistant message created. Aborting response generation.",
         );
         c1Response.end();
         return;
