@@ -44,7 +44,7 @@ export const Select = ({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>{label}</SelectLabel>
+          <SelectLabel className="text-xs">{label}</SelectLabel>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
