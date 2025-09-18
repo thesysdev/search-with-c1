@@ -17,7 +17,7 @@ import {
 import { SearchProvider } from "../../types/searchProvider";
 
 const client = new OpenAI({
-  baseURL: "http://localhost:3102/v1/visualize",
+  baseURL: "https://api.thesys.dev/v1/visualize",
   apiKey: process.env.THESYS_API_KEY,
 });
 
