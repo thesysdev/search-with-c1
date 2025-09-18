@@ -1,4 +1,3 @@
-import { useIsMobile } from "@/app/hooks/useIsMobile";
 import {
   Select as CrayonSelect,
   SelectContent,
@@ -8,7 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@crayonai/react-ui";
-import Image from "next/image";
+
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 interface SelectOption {
   label: string;

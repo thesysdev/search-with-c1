@@ -1,7 +1,8 @@
 import { useState, Dispatch, SetStateAction, useRef } from "react";
 
-import { makeApiCall, ApiCallResponse } from "../utils/api";
 import { SearchProvider } from "../api/types/searchProvider";
+import { makeApiCall, ApiCallResponse } from "../utils/api";
+
 /**
  * Type definition for the UI state.
  * Contains all the state variables needed for the application's UI.

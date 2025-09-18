@@ -8,13 +8,12 @@ import {
   AssistantMessage,
   ThreadMessage,
 } from "../../cache/threadCache";
-import { SYSTEM_PROMPT } from "../systemPrompt";
 import {
   UnifiedSearchResponse,
   isGeminiResponse,
   isExaResponse,
 } from "../../types/unifiedSearchResponse";
-import { SearchProvider } from "../../types/searchProvider";
+import { SYSTEM_PROMPT } from "../systemPrompt";
 
 const client = new OpenAI({
   baseURL: "https://api.thesys.dev/v1/visualize",

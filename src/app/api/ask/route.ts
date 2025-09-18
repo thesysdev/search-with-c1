@@ -4,11 +4,11 @@ import { makeC1Response } from "@thesysai/genui-sdk/server";
 import { NextRequest } from "next/server";
 
 import { getThread } from "../cache/threadCache";
+import { SearchProvider, SearchProviderConfig } from "../types/searchProvider";
 
 import { findCachedTurn } from "./lib/findCachedTurn";
 import { generateAndStreamC1Response } from "./lib/generateAndStreamC1Response";
 import { getSearchResponse } from "./lib/getSearchResponse";
-import { SearchProvider, SearchProviderConfig } from "../types/searchProvider";
 
 interface AskRequest {
   prompt: string;

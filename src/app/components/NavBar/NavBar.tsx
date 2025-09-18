@@ -7,12 +7,10 @@ import Link from "next/link";
 
 import { useSharedUIState } from "@/app/context/UIStateContext";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { SearchProvider } from "@/app/api/types/searchProvider";
-import { Select } from "../Select";
 
 export const NavBar = () => {
   const isMobile = useIsMobile();
-  const { state, actions } = useSharedUIState();
+  const { actions } = useSharedUIState();
 
   return (
     <div className="fixed top-0 left-0 w-full z-10 bg-container">

@@ -2,7 +2,6 @@
 
 import Exa from "exa-js";
 
-import { ThreadMessage } from "../cache/threadCache";
 
 const exa = new Exa(process.env.EXA_API_KEY as string);
 
@@ -81,7 +80,7 @@ export const exaSearch = async (
       url: result.url,
       content: result.text || "",
       snippet:
-        result.highlights?.[0] || result.text?.slice(0, 200) + "..." || "",
+        result.highlights?.[0] || `${result.text?.slice(0, 200)}...` || "",
       publishedDate: result.publishedDate || undefined,
       author: result.author || undefined,
     }));

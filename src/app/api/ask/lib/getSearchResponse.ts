@@ -5,8 +5,8 @@ import {
   addAssistantMessage,
   ThreadMessage,
 } from "../../cache/threadCache";
-import { googleGenAISearch } from "../../services/googleGenAiSearch";
 import { exaSearch } from "../../services/exaSearch";
+import { googleGenAISearch } from "../../services/googleGenAiSearch";
 import {
   SearchProvider,
   SearchProviderConfig,
