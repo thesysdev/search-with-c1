@@ -61,6 +61,7 @@ export const useUIState = (): { state: UIState; actions: UIActions } => {
       searchQuery,
       threadId,
       searchProvider,
+      numResults: searchProvider === SearchProvider.EXA ? 5 : undefined,
       setC1Response,
       setIsLoading,
       abortController,

@@ -19,6 +19,8 @@ export type ApiCallParams = {
   setAbortController: (controller: AbortController | null) => void;
   /** The ID of the thread to associate with the API call */
   threadId?: string;
+  /** The number of results to return */
+  numResults?: number;
 };
 
 /**
@@ -87,6 +89,7 @@ export const makeApiCall = async ({
   setIsLoading,
   abortController,
   setAbortController,
+  numResults,
 }: ApiCallParams): Promise<ApiCallResponse> => {
   try {
     // Cancel any ongoing request before starting a new one
@@ -109,6 +112,7 @@ export const makeApiCall = async ({
         prompt: searchQuery,
         threadId,
         searchProvider,
+        numResults,
       }),
       signal: newAbortController.signal,
     });
