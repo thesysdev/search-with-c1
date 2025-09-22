@@ -4,17 +4,15 @@ import { makeC1Response } from "@thesysai/genui-sdk/server";
 import { NextRequest } from "next/server";
 
 import { getThread } from "../cache/threadCache";
-import { SearchProvider, SearchProviderConfig } from "../types/searchProvider";
+import type { SearchProvider } from "../types/searchProvider";
 
 import { findCachedTurn } from "./lib/findCachedTurn";
 import { generateAndStreamC1Response } from "./lib/generateAndStreamC1Response";
-import { getSearchResponse } from "./lib/getSearchResponse";
 
 interface AskRequest {
   prompt: string;
   threadId: string;
-  searchProvider?: SearchProvider;
-  numResults?: number;
+  searchProvider: SearchProvider;
 }
 
 /**
@@ -78,16 +76,9 @@ export async function POST(req: NextRequest) {
   const {
     prompt,
     threadId: reqThreadId,
-    searchProvider = SearchProvider.EXA,
-    numResults = 10,
+    searchProvider,
   } = (await req.json()) as AskRequest;
   threadId = reqThreadId;
-
-  // Create search provider configuration
-  const searchConfig: SearchProviderConfig = {
-    provider: searchProvider,
-    numResults,
-  };
 
   const generateResponse = async () => {
     try {
@@ -98,7 +89,7 @@ export async function POST(req: NextRequest) {
       if (threadHistory.length === 0 && threadId) {
         isNewThread = true;
         console.log(
-          `Thread ${threadId} appears to be new or expired, starting fresh`,
+          `Thread ${threadId} appears to be new or expired, starting fresh`
         );
       }
 
@@ -121,29 +112,12 @@ export async function POST(req: NextRequest) {
         return;
       }
 
-      const { assistantMessage } = await getSearchResponse(
-        threadId as string,
-        prompt,
-        threadHistory,
-        c1Response,
-        req.signal,
-        searchConfig,
-      );
-
-      if (!assistantMessage) {
-        console.error(
-          "No assistant message created. Aborting response generation.",
-        );
-        c1Response.end();
-        return;
-      }
-
-      const updatedThreadHistory = (await getThread(threadId as string)) || [];
-
+      // Call generateAndStreamC1Response directly - it will handle search via tools
       await generateAndStreamC1Response({
         threadId: threadId as string,
-        threadHistory: updatedThreadHistory,
-        assistantMessage,
+        prompt,
+        threadHistory,
+        searchProvider,
         c1Response,
         signal: req.signal,
       });
@@ -152,15 +126,16 @@ export async function POST(req: NextRequest) {
         error instanceof Error ? error.message : "An unknown error occurred";
       console.error(`Error generating response: ${message}`);
 
-      const threadHistory = (await getThread(threadId as string)) || [];
-      await generateAndStreamC1Response({
-        threadId: threadId as string,
-        threadHistory,
-        assistantMessage: null as any,
-        c1Response,
-        signal: req.signal,
-        errorMessage: message,
+      // For errors, we still need to generate some response
+      // Since the function signature changed, we'll create a simple error response
+      c1Response.writeThinkItem({
+        title: "Error",
+        description: "An error occurred while processing your request",
       });
+      c1Response.writeContent(
+        `I encountered an error: ${message}. Please try again.`
+      );
+      c1Response.end();
     }
   };
 

@@ -12,7 +12,7 @@ export type ThreadValidationResult = {
  * @returns Promise<ThreadValidationResult> - Result indicating what action to take
  */
 export const validateAndDecideThread = async (
-  threadIdParam: string,
+  threadIdParam: string
 ): Promise<ThreadValidationResult> => {
   try {
     const validation = await validateThread(threadIdParam);
@@ -54,7 +54,7 @@ export const handleInitialThreadValidation = async (
   threadIdParam: string,
   hasValidated: React.MutableRefObject<boolean>,
   isLoading: boolean,
-  performSearch: (query: string, generateThreadId: boolean) => Promise<void>,
+  performSearch: (query: string, generateThreadId: boolean) => Promise<void>
 ): Promise<void> => {
   // Only validate if we have both query and threadId, haven't validated yet, and not currently loading
   if (!currentQuery || !threadIdParam || hasValidated.current || isLoading) {
@@ -68,19 +68,19 @@ export const handleInitialThreadValidation = async (
 
     if (!validation.exists) {
       console.log(
-        `Initial thread ${threadIdParam} expired, creating new thread and performing search`,
+        `Initial thread ${threadIdParam} expired, creating new thread and performing search`
       );
       await performSearch(currentQuery, true);
     } else {
       console.log(
-        `Initial thread ${threadIdParam} exists, performing search with existing thread`,
+        `Initial thread ${threadIdParam} exists, performing search with existing thread`
       );
       await performSearch(currentQuery, false);
     }
   } catch (error) {
     console.warn(
       "Initial thread validation failed, creating new thread:",
-      error,
+      error
     );
     await performSearch(currentQuery, true);
   }
