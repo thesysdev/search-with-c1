@@ -61,7 +61,7 @@ export const exaSearch = async (
       text: true, // Include full text content
       highlights: true, // Include highlights for better snippets
       type: "auto", // Let Exa choose between neural and keyword search
-      excludeDomains: ["wikipedia.org"],
+      excludeDomains: ["wikipedia.org"], // Exclude Wikipedia to avoid exceeding model context window
     });
 
     writeProgress({
