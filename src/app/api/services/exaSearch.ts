@@ -2,7 +2,6 @@
 
 import Exa from "exa-js";
 
-
 const exa = new Exa(process.env.EXA_API_KEY as string);
 
 /**
@@ -38,7 +37,7 @@ export const exaSearch = async (
   query: string,
   writeProgress: ProgressCallback,
   signal?: AbortSignal,
-  numResults: number = 10,
+  numResults: number = 10
 ): Promise<ExaSearchResponse> => {
   try {
     writeProgress({
@@ -62,6 +61,7 @@ export const exaSearch = async (
       text: true, // Include full text content
       highlights: true, // Include highlights for better snippets
       type: "auto", // Let Exa choose between neural and keyword search
+      excludeDomains: ["wikipedia.org"],
     });
 
     writeProgress({
@@ -122,7 +122,7 @@ export const exaSearch = async (
     });
 
     throw new Error(
-      `Exa search failed: ${errorDescription}. Please try again or use a different search provider.`,
+      `Exa search failed: ${errorDescription}. Please try again or use a different search provider.`
     );
   }
 };
